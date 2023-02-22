@@ -1,0 +1,22 @@
+{
+    "server": {
+        "address": "0.0.0.0",
+        "port": 4723,
+        "basePath": "wd/hub",
+        "logLevel": "warn",
+        "allowInsecure": "adb_shell"
+    },
+    "capabilities": {
+        "deviceName": "Android_1",
+        "platformName": "Android",
+        "udid": "emulator-5554",
+        "platformVersion": "5.0.2",
+        "automationName": "UiAutomator2",
+        "systemPort": 8200,
+        "newCommandTimeout": 600,
+        "appPackage": "io.appium.android.apis",
+        "appActivity": "io.appium.android.apis.ApiDemos",
+        "noReset": true,
+        "dontStopAppOnReset": true
+    }
+}

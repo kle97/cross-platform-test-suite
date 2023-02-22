@@ -2,14 +2,14 @@
 .gradle
 
 # Ignore Gradle build output directory
-app/bin/
-app/build/
+build/
 bin/
 
 
 ### miscellaneous ###
 .env
 apk/
+/reports
 
 ### General ###
 HELP.md
