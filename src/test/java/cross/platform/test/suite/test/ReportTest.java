@@ -4,6 +4,7 @@ import cross.platform.test.suite.configuration.manager.ReportManager;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
@@ -31,5 +32,11 @@ public interface ReportTest {
         log.info("{} - {} - {} - {}", testName, className, methodName, description);
         this.getReportManager().createMethodReport(methodName, description, className, testName);
         this.getReportManager().info("Description: " + description);
+    }
+
+    @AfterSuite
+    default void afterSuite() {
+        log.info("Writing extent report output to reporters...");
+        this.getReportManager().flush();
     }
 }

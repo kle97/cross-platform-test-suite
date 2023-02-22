@@ -1,7 +1,6 @@
 package cross.platform.test.suite.test;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.properties.ServerArguments;
@@ -17,7 +16,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
@@ -34,8 +32,6 @@ public abstract class BaseSetupTest {
     protected abstract MobileConfig getMobileConfig();
 
     protected abstract DriverManager getDriverManager();
-
-    protected abstract ReportManager getReportManager();
 
     protected AppiumDriverLocalService getAppiumDriverLocalService() {
         return appiumDriverLocalService;
@@ -55,12 +51,6 @@ public abstract class BaseSetupTest {
     protected void afterTest() {
         this.stopSession();
         this.stopServer();
-    }
-
-    @AfterSuite
-    protected void afterSuite() {
-        log.info("Writing extent report output to reporters...");
-        this.getReportManager().flush();
     }
 
     protected void startServer() {
