@@ -29,7 +29,7 @@ public interface ReportTest {
         String testName = result.getTestName();
         String methodName = method.getMethodName();
         String description = method.getDescription();
-        log.info("{} - {} - {} - {}", testName, className, methodName, description);
+//        log.info("{} - {} - {} - {}", testName, className, methodName, description);
         this.getReportManager().createMethodReport(methodName, description, className, testName);
         this.getReportManager().info("Description: " + description);
     }

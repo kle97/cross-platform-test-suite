@@ -17,9 +17,11 @@ import javax.inject.Named;
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Guice
-@Test(testName = TestConst.JAVA_TEST, groups = TestConst.JAVA_TEST)
+@Test(testName = TestConst.JAVA_TEST, groups = JavaTest.GROUP)
 public class JavaTest extends BaseSetupTest implements ReportTest {
-    
+
+    public static final String GROUP = "JavaTest";
+
     @Named(TestConst.ANDROID_2_CONFIG_PATH)
     private final MobileConfig mobileConfig;
     private final ReportManager reportManager;

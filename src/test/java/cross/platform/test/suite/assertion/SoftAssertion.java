@@ -7,21 +7,37 @@ import org.slf4j.LoggerFactory;
 import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SoftAssertion extends Assertion {
-    StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+    private static final String DEFAULT_SOFT_ASSERT_MESSAGE = "The following asserts failed:";
+    private static final StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
     private final Logger log;
     private final Map<AssertionError, IAssert<?>> errorMap = new LinkedHashMap<>();
-    private static final String DEFAULT_SOFT_ASSERT_MESSAGE = "The following asserts failed:";
-    private final ReportManager reportManager;
+    private ReportManager reportManager;
+    private boolean throwError;
+
+    public SoftAssertion() {
+        Optional<? extends Class<?>> caller = walker.walk(s -> s.map(StackWalker.StackFrame::getDeclaringClass).skip(2).findFirst());
+        if (caller.isPresent()) {
+            this.log = LoggerFactory.getLogger(caller.get().getName());
+        } else {
+            this.log = LoggerFactory.getLogger(getClass());
+        }
+    }
+
+    public SoftAssertion(boolean throwError) {
+        this();
+        this.throwError = throwError;
+    }
+
     public SoftAssertion(ReportManager reportManager) {
+        this(false, reportManager);
+    }
+
+    public SoftAssertion(boolean throwError, ReportManager reportManager) {
+        this(throwError);
         this.reportManager = reportManager;
-        Class<?> callerClass = walker.getCallerClass();
-        this.log = LoggerFactory.getLogger(callerClass.getName());
     }
 
     @Override
@@ -35,7 +51,7 @@ public class SoftAssertion extends Assertion {
         String message = this.getAssertMessage(assertCommand);
         this.logPass(message);
     }
-    
+
     private String getAssertMessage(IAssert<?> assertCommand) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Message [\"")
@@ -47,17 +63,21 @@ public class SoftAssertion extends Assertion {
                      .append("\"]");
         return stringBuilder.toString();
     }
-    
+
     private void logFail(String message) {
         String logMessage = AnsiColor.RED_BOLD + "   FAIL   " + AnsiColor.RESET + message;
         this.log.info(logMessage);
-        this.reportManager.fail(message);
+        if (this.reportManager != null) {
+            this.reportManager.fail(message);
+        }
     }
-    
-    private void logPass(String message) {        
+
+    private void logPass(String message) {
         String logMessage = AnsiColor.GREEN_BOLD + "   PASS   " + AnsiColor.RESET + message;
         this.log.info(logMessage);
-        this.reportManager.pass(message);
+        if (this.reportManager != null) {
+            this.reportManager.pass(message);
+        }
     }
 
     @Override
@@ -91,7 +111,9 @@ public class SoftAssertion extends Assertion {
                 stringBuilder.append("\n\t");
                 stringBuilder.append(getErrorDetails(error));
             }
-            throw new AssertionError(stringBuilder.toString());
+            if (throwError) {
+                throw new AssertionError(stringBuilder.toString());
+            }
         }
     }
 
@@ -214,7 +236,7 @@ public class SoftAssertion extends Assertion {
     public void assertSame(String message, Object actual, Object expected) {
         super.assertSame(actual, expected, message);
     }
-    
+
     public void assertTrue(String message, boolean condition) {
         super.assertTrue(condition, message);
     }
