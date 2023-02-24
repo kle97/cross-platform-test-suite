@@ -19,7 +19,8 @@ public interface ScreenshotHelper {
     default void screenshotHelperBeforeMethod(Method method) {
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null) {
-            String screenshotTitle = "before-" + method.getName();
+            String methodName = method.getName();
+            String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
             this.takeScreenshot(screenshotTitle);
         }
     }
@@ -28,7 +29,8 @@ public interface ScreenshotHelper {
     default void screenshotHelperAfterMethod(Method method) {
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null) {
-            String screenshotTitle = "after-" + method.getName();
+            String methodName = method.getName();
+            String screenshotTitle = "after" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
             this.takeScreenshot(screenshotTitle);
         }
     }
