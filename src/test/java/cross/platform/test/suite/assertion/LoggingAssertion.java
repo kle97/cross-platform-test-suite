@@ -7,37 +7,23 @@ import org.slf4j.LoggerFactory;
 import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
-public class SoftAssertion extends Assertion {
+public class LoggingAssertion extends Assertion {
     private static final String DEFAULT_SOFT_ASSERT_MESSAGE = "The following asserts failed:";
-    private static final StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
-    private final Logger log;
     private final Map<AssertionError, IAssert<?>> errorMap = new LinkedHashMap<>();
-    private ReportManager reportManager;
-    private boolean throwError;
+    private final ReportManager reportManager;
+    private Logger log = LoggerFactory.getLogger(LoggingAssertion.class);
 
-    public SoftAssertion() {
-        Optional<? extends Class<?>> caller = walker.walk(s -> s.map(StackWalker.StackFrame::getDeclaringClass).skip(2).findFirst());
-        if (caller.isPresent()) {
-            this.log = LoggerFactory.getLogger(caller.get().getName());
-        } else {
-            this.log = LoggerFactory.getLogger(getClass());
-        }
-    }
-
-    public SoftAssertion(boolean throwError) {
-        this();
-        this.throwError = throwError;
-    }
-
-    public SoftAssertion(ReportManager reportManager) {
-        this(false, reportManager);
-    }
-
-    public SoftAssertion(boolean throwError, ReportManager reportManager) {
-        this(throwError);
+    public LoggingAssertion(ReportManager reportManager) {
         this.reportManager = reportManager;
+    }
+
+    public void setCurrentLogger(Logger log) {
+        this.log = log;
     }
 
     @Override
@@ -111,9 +97,7 @@ public class SoftAssertion extends Assertion {
                 stringBuilder.append("\n\t");
                 stringBuilder.append(getErrorDetails(error));
             }
-            if (throwError) {
-                throw new AssertionError(stringBuilder.toString());
-            }
+            throw new AssertionError(stringBuilder.toString());
         }
     }
 

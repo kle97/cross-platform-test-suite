@@ -1,4 +1,4 @@
-package cross.platform.test.suite.test;
+package cross.platform.test.suite.test.setup;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.constant.TestConst;
@@ -32,14 +32,6 @@ public abstract class BaseSetupTest {
     protected abstract MobileConfig getMobileConfig();
 
     protected abstract DriverManager getDriverManager();
-
-    protected AppiumDriverLocalService getAppiumDriverLocalService() {
-        return appiumDriverLocalService;
-    }
-
-    protected void setAppiumDriverLocalService(AppiumDriverLocalService appiumDriverLocalService) {
-        this.appiumDriverLocalService = appiumDriverLocalService;
-    }
 
     @BeforeTest(alwaysRun = true)
     protected void beforeTest() {
@@ -143,5 +135,13 @@ public abstract class BaseSetupTest {
             return true;
         }
         return false;
+    }
+
+    protected void setAppiumDriverLocalService(AppiumDriverLocalService appiumDriverLocalService) {
+        this.appiumDriverLocalService = appiumDriverLocalService;
+    }
+
+    protected AppiumDriverLocalService getAppiumDriverLocalService() {
+        return appiumDriverLocalService;
     }
 }

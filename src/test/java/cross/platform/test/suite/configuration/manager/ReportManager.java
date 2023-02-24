@@ -125,9 +125,21 @@ public final class ReportManager {
     public ExtentTest info(String message) {
         return this.log(Status.INFO, message, null, null);
     }
-    
+
+    public ExtentTest addScreenshotFromBase64String(String base64String) {
+        return this.addScreenshotFromBase64String(base64String, null);
+    }
+
+    public ExtentTest addScreenshotFromBase64String(String base64String, String title) {
+        Media media = MediaEntityBuilder.createScreenCaptureFromBase64String(base64String, title).build();
+        return this.log(Status.INFO, null, null, media);
+    }
+
     public ExtentTest addScreenshot(String screenshotPath) {
-        Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build();
+        return this.addScreenshot(screenshotPath, null);
+    }
+    public ExtentTest addScreenshot(String screenshotPath, String title) {
+        Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath, title).build();
         return this.log(Status.INFO, null, null, media);
     }
     

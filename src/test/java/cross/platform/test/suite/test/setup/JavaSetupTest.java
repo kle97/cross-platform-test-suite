@@ -1,7 +1,6 @@
-package cross.platform.test.suite.test;
+package cross.platform.test.suite.test.setup;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import lombok.Getter;
@@ -14,22 +13,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Slf4j
+@Guice
+@Test(testName = TestConst.JAVA_TEST)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-@Guice
-@Test(testName = TestConst.JAVA_TEST, groups = JavaTest.GROUP)
-public class JavaTest extends BaseSetupTest implements ReportTest {
-
-    public static final String GROUP = "JavaTest";
+public final class JavaSetupTest extends BaseSetupTest {
 
     @Named(TestConst.ANDROID_2_CONFIG_PATH)
     private final MobileConfig mobileConfig;
-    private final ReportManager reportManager;
     private final DriverManager driverManager;
-
-    @Test(description = "javaTest method description.")
-    public void javaTest() {
-        log.info(this.driverManager.getDriver().getRemoteAddress().toString());
-        this.reportManager.info(this.driverManager.getDriver().getRemoteAddress().toString());
-    }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.javaprop.util.Markers;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
+import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
@@ -41,8 +42,7 @@ public class ParentModule extends AbstractModule {
     @Provides
     @Singleton
     protected JavaPropsMapper provideJavaPropsMapper() {
-        final JavaPropsMapper mapper = new JavaPropsMapper();
-        return mapper;
+        return new JavaPropsMapper();
     }
     
     @Provides
@@ -59,11 +59,18 @@ public class ParentModule extends AbstractModule {
                                             .withZone(ZoneId.systemDefault())
                                             .format(Instant.now());
         String filePath = "cross-platform-test-suite" + "-" + timeStamp + ".html";
-        String reportFilePath = TestConst.REPORT_PATH + "/" + filePath;
+        String reportFilePath = TestConst.REPORT_PATH + filePath;
         log.info(reportFilePath);
         ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
+        spark.config().setCss(".col-md-3 > img { max-width: 180px; max-height: 260px; } .col-md-3 > .title { max-width: 180px; }");
         reportManager.attachReporter(spark);
         return reportManager;
+    }
+
+    @Provides
+    @Singleton
+    protected LoggingAssertion provideLoggingAssertion(ReportManager reportManager) {
+        return new LoggingAssertion(reportManager);
     }
 
     @Provides
