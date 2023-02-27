@@ -16,7 +16,9 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
 import java.io.IOException;
@@ -33,16 +35,36 @@ public abstract class BaseSetupTest {
 
     protected abstract DriverManager getDriverManager();
 
+    @BeforeSuite(alwaysRun = true)
+    protected void beforeSuite() {
+        if (!Boolean.parseBoolean(System.getProperty("parallel"))) {
+            this.startServer();
+            this.startSession();
+        }
+    }
+
+    @AfterSuite(alwaysRun = true)
+    protected void afterSuite() {
+        if (!Boolean.parseBoolean(System.getProperty("parallel"))) {
+            this.stopSession();
+            this.stopServer();
+        }
+    }
+
     @BeforeTest(alwaysRun = true)
     protected void beforeTest() {
-        this.startServer();
-        this.startSession();
+        if (Boolean.parseBoolean(System.getProperty("parallel"))) {
+            this.startServer();
+            this.startSession();
+        }
     }
 
     @AfterTest(alwaysRun = true)
     protected void afterTest() {
-        this.stopSession();
-        this.stopServer();
+        if (Boolean.parseBoolean(System.getProperty("parallel"))) {
+            this.stopSession();
+            this.stopServer();
+        }
     }
 
     protected void startServer() {

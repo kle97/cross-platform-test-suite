@@ -1,4 +1,4 @@
-package cross.platform.test.suite.test;
+package cross.platform.test.suite.test.apptest;
 
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.assertion.LoggingAssertion;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 @Slf4j
 @Guice
-@Test
+@Test(groups = FollowTest.GROUP, dependsOnGroups = AdvancedTest.GROUP)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FollowTest implements ReportHelper, AssertionHelper, ScreenshotHelper {
@@ -30,8 +30,8 @@ public class FollowTest implements ReportHelper, AssertionHelper, ScreenshotHelp
     private final ReportManager reportManager;
     private final LoggingAssertion assertion;
 
-    @Test(description = "followTest description...")
     @Screenshot
+    @Test(description = "followTest description...")
     public void followTest() {
         log.debug(this.mobileConfig.getServerArguments().getAddress());
         log.debug(this.driverManager.getDriver().getRemoteAddress().toString());
@@ -42,12 +42,12 @@ public class FollowTest implements ReportHelper, AssertionHelper, ScreenshotHelp
         assertion.assertEquals("Check Cancel button label", "Cancel", "Cancel");
     }
 
-    @Test(dependsOnMethods = "followTest", description = "followTest2 description...")
     @Screenshot
+    @Test(description = "followTest2 description...", dependsOnMethods = "followTest")
     public void followTest2() {
         assertion.assertEquals("Check page title", "Follow page", "Follow page");
-        assertion.assertEquals("Check delete button label", "Delete", "delete");
-        assertion.assertEquals("Check copy button label", "Copy", "copy");
+        assertion.assertEquals("Check delete button label", "Delete", "Delete");
+        assertion.assertEquals("Check copy button label", "Copy", "Copy");
         assertion.assertEquals("Check edit button label", "Edit", "Edit");
     }
 }

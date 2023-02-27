@@ -27,6 +27,8 @@ import java.util.Properties;
 @Slf4j
 public class ParentModule extends AbstractModule {
 
+    MobileConfig mobileConfig;
+
     @Override
     protected void configure() {
     }
@@ -44,7 +46,7 @@ public class ParentModule extends AbstractModule {
     protected JavaPropsMapper provideJavaPropsMapper() {
         return new JavaPropsMapper();
     }
-    
+
     @Provides
     @Singleton
     protected DriverManager provideDriverManager() {
@@ -60,7 +62,7 @@ public class ParentModule extends AbstractModule {
                                             .format(Instant.now());
         String filePath = "cross-platform-test-suite" + "-" + timeStamp + ".html";
         String reportFilePath = TestConst.REPORT_PATH + filePath;
-        log.info(reportFilePath);
+//        log.info(reportFilePath);
         ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
         spark.config().setCss(".col-md-3 > img { max-width: 180px; max-height: 260px; } .col-md-3 > .title { max-width: 180px; }");
         reportManager.attachReporter(spark);
@@ -73,24 +75,41 @@ public class ParentModule extends AbstractModule {
         return new LoggingAssertion(reportManager);
     }
 
+    protected MobileConfig getDefaultMobileConfig(ObjectMapper objectMapper, JavaPropsMapper propsMapper) {
+        if (this.mobileConfig == null) {
+            this.mobileConfig = this.readMobileConfigFromFile(objectMapper, propsMapper, TestConst.ANDROID_1_CONFIG_PATH);
+        }
+        return this.mobileConfig;
+    }
+
     @Provides
     @Singleton
-    protected MobileConfig provideAndroid1Config(ObjectMapper objectMapper, JavaPropsMapper propsMapper) throws IOException {
-        Properties configAsProperties = this.readJsonFileAsProperties(objectMapper, propsMapper, TestConst.ANDROID_1_CONFIG_PATH);
-        MobileConfig config = propsMapper.readPropertiesAs(configAsProperties, MobileConfig.class);
-        return config;
+    protected MobileConfig provideAndroid1Config(ObjectMapper objectMapper, JavaPropsMapper propsMapper) {
+        return this.getDefaultMobileConfig(objectMapper, propsMapper);
     }
 
     @Provides
     @Singleton
     @Named(TestConst.ANDROID_2_CONFIG_PATH)
-    protected MobileConfig provideAndroid2Config(ObjectMapper objectMapper, JavaPropsMapper propsMapper) throws IOException {
-        Properties configAsProperties = this.readJsonFileAsProperties(objectMapper, propsMapper, TestConst.ANDROID_2_CONFIG_PATH);
-        MobileConfig config = propsMapper.readPropertiesAs(configAsProperties, MobileConfig.class);
-        return config;
+    protected MobileConfig provideAndroid2Config(ObjectMapper objectMapper, JavaPropsMapper propsMapper) {
+        if (Boolean.parseBoolean(System.getProperty("parallel"))) {
+            return this.readMobileConfigFromFile(objectMapper, propsMapper, TestConst.ANDROID_2_CONFIG_PATH);
+        } else {
+            return this.getDefaultMobileConfig(objectMapper, propsMapper);
+        }
     }
 
-    protected Properties readJsonFileAsProperties(ObjectMapper objectMapper, JavaPropsMapper propsMapper, String filePath) throws IOException {
+    protected MobileConfig readMobileConfigFromFile(ObjectMapper objectMapper, JavaPropsMapper propsMapper, String filePath) {
+        try {
+            Properties configAsProperties = this.readJsonFileAsProperties(objectMapper, propsMapper, filePath);
+            return propsMapper.readPropertiesAs(configAsProperties, MobileConfig.class);
+        } catch (IOException ex) {
+            log.debug(ex.getMessage());
+            return null;
+        }
+    }
+
+    protected Properties readJsonFileAsProperties(ObjectMapper objectMapper, JavaPropsMapper propsMapper, String filePath) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
             Object config = objectMapper.readValue(inputStream, Object.class);
             JavaPropsSchema propsSchema = JavaPropsSchema.emptySchema()
@@ -105,6 +124,9 @@ public class ParentModule extends AbstractModule {
                 }
             }
             return configAsProperties;
+        } catch (IOException ex) {
+            log.debug(ex.getMessage());
+            return null;
         }
     }
 }

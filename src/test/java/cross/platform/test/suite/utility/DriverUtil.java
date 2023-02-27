@@ -20,16 +20,19 @@ public final class DriverUtil {
         return saveScreenshot(webDriver, title, TestConst.SCREENSHOT_PATH);
     }
 
-    public static File saveScreenshot(WebDriver webDriver, String title, String saveFilePath) {
+    public static File saveScreenshot(WebDriver webDriver, String title, String directory) {
         File tempScreenshotFile = getScreenshotAsFile(webDriver);
         if (tempScreenshotFile != null) {
-            String filePath = saveFilePath + UUID.randomUUID() + "-" + title + ".jpg";
-            File savedScreenshotFile = new File(filePath);
-            if (copyFile(tempScreenshotFile, savedScreenshotFile)) {
-                return savedScreenshotFile;
+            File directoryFile = new File(directory);
+            if (directoryFile.exists() || directoryFile.mkdirs()) {
+                String filePath = directory + UUID.randomUUID() + "-" + title + ".jpg";
+                File savedScreenshotFile = new File(filePath);
+                if (copyFile(tempScreenshotFile, savedScreenshotFile)) {
+                    return savedScreenshotFile;
+                }
             }
         }
-        log.debug("Couldn't save screenshot with title '{}' to path '{}'", title, saveFilePath);
+        log.debug("Couldn't save screenshot with title '{}' to path '{}'", title, directory);
         return null;
     }
 

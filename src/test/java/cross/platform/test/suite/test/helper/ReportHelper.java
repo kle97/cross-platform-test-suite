@@ -20,6 +20,9 @@ public interface ReportHelper {
     default void reportHelperBeforeClass(ITestContext context) {
         String className = this.getClass().getSimpleName();
         String testName = context.getName();
+        if (testName.isBlank()) {
+            testName = "DefaultTest";
+        }
 //        log.info("{} - {}", testName, className);
         this.getReportManager().createClassReport(className, testName);
     }
@@ -34,11 +37,15 @@ public interface ReportHelper {
 //        log.info("{} - {} - {} - {}", testName, className, methodName, description);
         this.getReportManager().createMethodReport(methodName, description, className, testName);
         this.getReportManager().info("Description: " + description);
+        LoggerFactory.getLogger(className).info("Description: " + description);
     }
 
     @AfterSuite
     default void reportHelperAfterSuite() {
         log.info("Writing extent report output to reporters...");
         this.getReportManager().flush();
+        for (String reporterFilePath: this.getReportManager().getReporterFilePaths()) {
+            System.out.println("Generated report file at: " + reporterFilePath);
+        }
     }
 }

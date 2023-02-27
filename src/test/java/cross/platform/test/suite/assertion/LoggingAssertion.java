@@ -101,107 +101,107 @@ public class LoggingAssertion extends Assertion {
         }
     }
 
-    public <T> void assertEquals(String message, T actual, T expected) {
+    public <T> void assertEquals(String message, T expected, T actual) {
         super.assertEquals(actual, expected, message);
     }
 
     @Override
-    public void assertEquals(String message, String actual, String expected) {
+    public void assertEquals(String message, String expected, String actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, long actual, long expected) {
+    public void assertEquals(String message, long expected, long actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, boolean actual, boolean expected) {
+    public void assertEquals(String message, boolean expected, boolean actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, byte actual, byte expected) {
+    public void assertEquals(String message, byte expected, byte actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, char actual, char expected) {
+    public void assertEquals(String message, char expected, char actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, short actual, short expected) {
+    public void assertEquals(String message, short expected, short actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, int actual, int expected) {
+    public void assertEquals(String message, int expected, int actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, Collection<?> actual, Collection<?> expected) {
-        super.assertEquals(actual, expected, message);
-    }
-
-
-    public void assertEquals(String message, Object[] actual, Object[] expected) {
+    public void assertEquals(String message, Collection<?> expected, Collection<?> actual) {
         super.assertEquals(actual, expected, message);
     }
 
 
-    public void assertEquals(String message, byte[] actual, byte[] expected) {
+    public void assertEquals(String message, Object[] expected, Object[] actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, Set<?> actual, Set<?> expected) {
+
+    public void assertEquals(String message, byte[] expected, byte[] actual) {
         super.assertEquals(actual, expected, message);
     }
 
-    public void assertEquals(String message, double actual, double expected, double delta) {
+    public void assertEquals(String message, Set<?> expected, Set<?> actual) {
+        super.assertEquals(actual, expected, message);
+    }
+
+    public void assertEquals(String message, double expected, double actual, double delta) {
         super.assertEquals(actual, expected, delta, message);
     }
 
-    public void assertEquals(String message, float actual, float expected, float delta) {
+    public void assertEquals(String message, float expected, float actual, float delta) {
         super.assertEquals(actual, expected, delta, message);
     }
 
-    public void assertEqualsNoOrder(String message, Object[] actual, Object[] expected) {
+    public void assertEqualsNoOrder(String message, Object[] expected, Object[] actual) {
         super.assertEqualsNoOrder(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, Object actual, Object expected) {
+    public void assertNotEquals(String message, Object expected, Object actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
     @Override
-    public void assertNotEquals(String message, String actual, String expected) {
+    public void assertNotEquals(String message, String expected, String actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, long actual, long expected) {
+    public void assertNotEquals(String message, long expected, long actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, boolean actual, boolean expected) {
+    public void assertNotEquals(String message, boolean expected, boolean actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, byte actual, byte expected) {
+    public void assertNotEquals(String message, byte expected, byte actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, char actual, char expected) {
+    public void assertNotEquals(String message, char expected, char actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, short actual, short expected) {
+    public void assertNotEquals(String message, short expected, short actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, int actual, int expected) {
+    public void assertNotEquals(String message, int expected, int actual) {
         super.assertNotEquals(actual, expected, message);
     }
 
-    public void assertNotEquals(String message, float actual, float expected, float delta) {
+    public void assertNotEquals(String message, float expected, float actual, float delta) {
         super.assertNotEquals(actual, expected, delta, message);
     }
 
-    public void assertNotEquals(String message, double actual, double expected, double delta) {
+    public void assertNotEquals(String message, double expected, double actual, double delta) {
         super.assertNotEquals(actual, expected, delta, message);
     }
 
@@ -209,7 +209,7 @@ public class LoggingAssertion extends Assertion {
         super.assertNotNull(object, message);
     }
 
-    public void assertNotSame(String message, Object actual, Object expected) {
+    public void assertNotSame(String message, Object expected, Object actual) {
         super.assertNotSame(actual, expected, message);
     }
 
@@ -217,7 +217,7 @@ public class LoggingAssertion extends Assertion {
         super.assertNull(object, message);
     }
 
-    public void assertSame(String message, Object actual, Object expected) {
+    public void assertSame(String message, Object expected, Object actual) {
         super.assertSame(actual, expected, message);
     }
 

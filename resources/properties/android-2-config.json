@@ -12,7 +12,7 @@
         "udid": "emulator-5556",
         "platformVersion": "5.0.2",
         "automationName": "UiAutomator2",
-        "systemPort": 8301,
+        "systemPort": 8302,
         "newCommandTimeout": 600,
         "appPackage": "io.appium.android.apis",
         "appActivity": "io.appium.android.apis.ApiDemos",
