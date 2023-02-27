@@ -69,12 +69,6 @@ test {
     def parallelEnabled = System.getProperty("parallel", "false")
     systemProperty "parallel", parallelEnabled
 
-    onOutput { descriptor, event ->
-        if (event.destination == TestOutputEvent.Destination.StdOut) {
-            logger.lifecycle(event.message.trim())
-        }
-    }
-    
     // Use TestNG for unit tests.
     useTestNG() {
         listeners << "cross.platform.test.suite.configuration.listener.TestNGAlterListener"
@@ -85,10 +79,17 @@ test {
         testName = ""
         suiteName = "defaultSuite"
     }
+
     outputs.upToDateWhen { false }
     testLogging {
         events = ["standardError", "skipped", "failed"]
         exceptionFormat = "full"
+    }
+
+    onOutput { descriptor, event ->
+        if (event.destination == TestOutputEvent.Destination.StdOut) {
+            logger.lifecycle(event.message.trim())
+        }
     }
 }
 
