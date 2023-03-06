@@ -13,78 +13,60 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
-
 public final class ReportManager {
-    private final StackWalker stackWalker = StackWalker.getInstance(RETAIN_CLASS_REFERENCE);
-    private final ExtentReports extentReports = new ExtentReports();
-    private final ThreadLocal<Map<String, ExtentTest>> classReportMapThreadLocal = ThreadLocal.withInitial(HashMap::new);
-    private final ThreadLocal<ExtentTest> currentReportThreadLocal = new ThreadLocal<>();
-    private final List<String> reporterFilePaths = new ArrayList<>();
+    private static final ExtentReports extentReports = new ExtentReports();
+    private static final List<String> reporterFilePaths = new ArrayList<>();
 
-    public boolean hasClassReport(String className) {
-        return this.classReportMapThreadLocal.get().containsKey(className);
-    }
+    private final Map<String, ExtentTest> classReportMap = new HashMap<>();
+    private ExtentTest currentReport;
 
-    public ExtentTest getCurrentReport() {
-        return this.currentReportThreadLocal.get();
-    }
-
-    public boolean hasCurrentReport() {
-        return this.currentReportThreadLocal.get() != null;
-    }
-
-    public List<String> getReporterFilePaths() {
+    public static List<String> getReporterFilePaths() {
         return List.copyOf(reporterFilePaths);
     }
 
     @SuppressWarnings("rawtypes")
-    public void attachReporter(ExtentObserver... observers) {
-        this.extentReports.attachReporter(observers);
+    public static void attachReporter(ExtentObserver... observers) {
+        extentReports.attachReporter(observers);
         for (ExtentObserver observer : observers) {
             if (observer instanceof AbstractFileReporter) {
-                String path = ((AbstractFileReporter) observer).getFile()
-                                                               .toURI()
-                                                               .toString()
+                String path = ((AbstractFileReporter) observer).getFile().toURI().toString()
                                                                .replace("file:/", "file:///");
                 reporterFilePaths.add(path);
             }
         }
     }
 
-    public void setSystemInfo(String key, String value) {
-        this.extentReports.setSystemInfo(key, value);
+    public static void setSystemInfo(String key, String value) {
+        extentReports.setSystemInfo(key, value);
+    }
+
+    public static void flush() {
+        extentReports.flush();
+    }
+
+    public boolean hasClassReport(String className) {
+        return this.classReportMap.containsKey(className);
+    }
+
+    public ExtentTest getCurrentReport() {
+        return this.currentReport;
+    }
+
+    public boolean hasCurrentReport() {
+        return this.currentReport != null;
     }
 
     public ExtentTest createClassReport(String className, String testTag) {
         if (this.hasClassReport(className)) {
-            return classReportMapThreadLocal.get().get(className);
+            return classReportMap.get(className);
         }
 
-        ExtentTest classReport = this.extentReports.createTest(className);
+        ExtentTest classReport = extentReports.createTest(className);
         if (testTag != null) {
             classReport.assignCategory(testTag);
         }
-        classReportMapThreadLocal.get().put(className, classReport);
+        classReportMap.put(className, classReport);
         return classReport;
-    }
-
-    public ExtentTest createMethodReport(String reportName) {
-        return this.createMethodReport(reportName, null);
-    }
-
-    public ExtentTest createMethodReport(String reportName, String description) {
-        String callerClassName = this.stackWalker.getCallerClass().getCanonicalName();
-        ExtentTest report;
-
-        if (callerClassName != null && this.hasClassReport(callerClassName)) {
-            ExtentTest classReport = this.classReportMapThreadLocal.get().get(callerClassName);
-            report = classReport.createNode(reportName, description);
-        } else {
-            report = this.extentReports.createTest(reportName, description);
-        }
-        currentReportThreadLocal.set(report);
-        return report;
     }
 
     public ExtentTest createMethodReport(String reportName, String description, String className) {
@@ -94,12 +76,12 @@ public final class ReportManager {
     public ExtentTest createMethodReport(String reportName, String description, String className, String testName) {
         ExtentTest classReport;
         if (this.hasClassReport(className)) {
-            classReport = this.classReportMapThreadLocal.get().get(className);
+            classReport = this.classReportMap.get(className);
         } else {
             classReport = this.createClassReport(className, testName);
         }
         ExtentTest report = classReport.createNode(reportName, description);
-        currentReportThreadLocal.set(report);
+        currentReport = report;
         return report;
     }
 
@@ -109,7 +91,7 @@ public final class ReportManager {
 
     public ExtentTest appendNodeToCurrentReport(String reportName, String description) {
         if (this.hasCurrentReport()) {
-            ExtentTest currentReport = this.currentReportThreadLocal.get();
+            ExtentTest currentReport = this.currentReport;
             return currentReport.createNode(reportName, description);
         }
 
@@ -121,26 +103,13 @@ public final class ReportManager {
     }
 
     public void removeReport(String reportName) {
-        if (this.hasCurrentReport() && this.getCurrentReport().getModel().getName().equals(reportName)) {
-            this.currentReportThreadLocal.remove();
-        }
-        this.extentReports.removeTest(reportName);
+        extentReports.removeTest(reportName);
     }
 
     public void removeCurrentReport() {
         if (this.hasCurrentReport()) {
-            ExtentTest currentReport = this.getCurrentReport();
-            this.currentReportThreadLocal.remove();
-            this.extentReports.removeTest(currentReport);
+            extentReports.removeTest(this.getCurrentReport());
         }
-    }
-
-    public void flush() {
-        this.extentReports.flush();
-    }
-
-    public ExtentTest info(String message) {
-        return this.log(Status.INFO, message, null, null);
     }
 
     public ExtentTest addScreenshotFromBase64String(String base64String) {
@@ -159,6 +128,10 @@ public final class ReportManager {
     public ExtentTest addScreenshot(String screenshotPath, String title) {
         Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath, title).build();
         return this.log(Status.INFO, null, null, media);
+    }
+
+    public ExtentTest info(String message) {
+        return this.log(Status.INFO, message, null, null);
     }
 
     public ExtentTest info(String message, String screenshotPath) {

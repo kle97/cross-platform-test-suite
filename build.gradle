@@ -16,42 +16,38 @@ repositories {
 }
 
 dependencies {
-    testImplementation (
-        // Use TestNG framework, also requires calling test.useTestNG() below
-        "org.testng:testng:7.5",
-        
-        // Guice dependency injection framework
-        "com.google.inject:guice:5.1.0",
-        
-        // Jackson Json parser for Java
-        "com.fasterxml.jackson.core:jackson-databind:2.14.2",
-        // Jackson support for properties format file (*.properties)
-        "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.14.2",
-        
-        // Appium java client
-        "io.appium:java-client:8.3.0",
-        
-        // AssertJ
-        "org.assertj:assertj-core:3.24.2",
-        
-        // Extent reports
-        "com.aventstack:extentreports:5.0.9",
-        // "com.aventstack:extentreports-testng-adapter:1.2.2",
-        
-        // Log4j2 api, core, and slf4j bridge
-        "org.slf4j:slf4j-api:2.0.6",
-        "org.apache.logging.log4j:log4j-core:2.19.0",
-        "org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0",
+    testImplementation(
+            // Use TestNG framework, also requires calling test.useTestNG() below
+            "org.testng:testng:7.5",
+
+            // Guice dependency injection framework
+            "com.google.inject:guice:5.1.0",
+
+            // Jackson Json parser for Java
+            "com.fasterxml.jackson.core:jackson-databind:2.14.2",
+            // Jackson support for properties format file (*.properties)
+            "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.14.2",
+
+            // Appium java client
+            "io.appium:java-client:8.3.0",
+
+            // Extent reports
+            "com.aventstack:extentreports:5.0.9",
+
+            // Log4j2 api, core, and slf4j bridge
+            "org.slf4j:slf4j-api:2.0.6",
+            "org.apache.logging.log4j:log4j-core:2.19.0",
+            "org.apache.logging.log4j:log4j-slf4j2-impl:2.19.0",
     )
-    
-    
-    testCompileOnly (
-        // Lombok
-        "org.projectlombok:lombok:1.18.26"
+
+
+    testCompileOnly(
+            // Lombok
+            "org.projectlombok:lombok:1.18.26"
     )
-	testAnnotationProcessor (
-        // Lombok
-        "org.projectlombok:lombok:1.18.26"
+    testAnnotationProcessor(
+            // Lombok
+            "org.projectlombok:lombok:1.18.26"
     )
 }
 
@@ -88,11 +84,11 @@ test {
 
     onOutput { descriptor, event ->
         if (event.destination == TestOutputEvent.Destination.StdOut) {
-            logger.lifecycle(event.message.trim())
+            logger.lifecycle(event.message.replaceFirst(/\s+$/, ""))
         }
     }
 }
 
-tasks.withType(Javadoc).all { 
-    enabled = false 
+tasks.withType(Javadoc).configureEach {
+    enabled = false
 }

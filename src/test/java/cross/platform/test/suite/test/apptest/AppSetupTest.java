@@ -5,7 +5,7 @@ package cross.platform.test.suite.test.apptest;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.test.setup.BaseSetupTest;
+import cross.platform.test.suite.test.setup.AbstractSetupTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 @Guice
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class AppSetupTest extends BaseSetupTest {
+public class AppSetupTest extends AbstractSetupTest {
 
     private final MobileConfig mobileConfig;
     private final DriverManager driverManager;

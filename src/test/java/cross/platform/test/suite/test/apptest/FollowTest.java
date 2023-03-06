@@ -5,7 +5,6 @@ import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.test.helper.AssertionHelper;
 import cross.platform.test.suite.test.helper.ReportHelper;
 import cross.platform.test.suite.test.helper.ScreenshotHelper;
 import lombok.Getter;
@@ -21,14 +20,14 @@ import javax.inject.Inject;
 @Test(groups = FollowTest.GROUP, dependsOnGroups = AdvancedTest.GROUP)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class FollowTest implements ReportHelper, AssertionHelper, ScreenshotHelper {
+public class FollowTest implements ReportHelper, ScreenshotHelper {
 
     public static final String GROUP = "FollowTest";
 
     private final MobileConfig mobileConfig;
     private final DriverManager driverManager;
-    private final ReportManager reportManager;
-    private final LoggingAssertion assertion;
+    private final ReportManager reportManager = new ReportManager();
+    private final LoggingAssertion assertion = new LoggingAssertion(reportManager, log);
 
     @Screenshot
     @Test(description = "followTest description...")

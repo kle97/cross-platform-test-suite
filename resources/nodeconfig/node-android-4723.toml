@@ -1,0 +1,21 @@
+[server]
+port = 5555
+
+[node]
+detect-drivers = false
+max-sessions = 1
+register-cycle = 10
+session-timeout = 300
+
+[relay]
+url = "http://host.docker.internal:4723/wd/hub"
+status-endpoint = "/status"
+configs = [
+    "1",
+    """
+    {
+        "platformName": "Android",
+        "appium:platformVersion": "5.0.2"
+    }
+    """
+]

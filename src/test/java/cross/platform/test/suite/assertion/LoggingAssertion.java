@@ -8,22 +8,27 @@ import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LoggingAssertion extends Assertion {
     private static final String DEFAULT_SOFT_ASSERT_MESSAGE = "The following asserts failed:";
-    private final Map<AssertionError, IAssert<?>> errorMap = new LinkedHashMap<>();
-    private final ReportManager reportManager;
-    private Logger log = LoggerFactory.getLogger(LoggingAssertion.class);
+    private static final Map<AssertionError, IAssert<?>> errorMap = new ConcurrentHashMap<>();
+    private ReportManager reportManager;
+    private final Logger log;
 
-    public LoggingAssertion(ReportManager reportManager) {
+    public LoggingAssertion(ReportManager reportManager, Logger log) {
         this.reportManager = reportManager;
+        this.log = log;
     }
 
-    public void setCurrentLogger(Logger log) {
+    public LoggingAssertion(Logger log) {
         this.log = log;
+    }
+
+    public LoggingAssertion() {
+        this.log = LoggerFactory.getLogger(LoggingAssertion.class);
     }
 
     @Override
@@ -74,31 +79,42 @@ public class LoggingAssertion extends Assertion {
             onAssertSuccess(assertion);
         } catch (AssertionError ex) {
             onAssertFailure(assertion, ex);
-            this.errorMap.put(ex, assertion);
+            errorMap.put(ex, assertion);
         } finally {
             onAfterAssert(assertion);
         }
     }
 
-    public void assertAll() {
+    public static void assertAll() {
         assertAll(null);
     }
 
-    public void assertAll(String message) {
-        if (!this.errorMap.isEmpty()) {
+    public static void assertAll(String message) {
+        if (!errorMap.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder(message == null ? DEFAULT_SOFT_ASSERT_MESSAGE : message);
             boolean first = true;
-            for (AssertionError error : this.errorMap.keySet()) {
+            for (AssertionError error : errorMap.keySet()) {
                 if (first) {
                     first = false;
                 } else {
                     stringBuilder.append(",");
                 }
                 stringBuilder.append("\n\t");
-                stringBuilder.append(getErrorDetails(error));
+                stringBuilder.append(extractErrorDetails(error));
             }
             throw new AssertionError(stringBuilder.toString());
         }
+    }
+
+    private static String extractErrorDetails(Throwable error) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(error.getMessage());
+        Throwable cause = error.getCause();
+        while (cause != null) {
+            sb.append(" ").append(cause.getMessage());
+            cause = cause.getCause();
+        }
+        return sb.toString();
     }
 
     public <T> void assertEquals(String message, T expected, T actual) {

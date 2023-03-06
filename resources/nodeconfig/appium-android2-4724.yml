@@ -1,0 +1,14 @@
+server:
+  port: 4724
+  base-path: /wd/hub
+  allow-insecure:
+    - adb_shell
+  use-drivers:
+    - uiautomator2
+  default-capabilities:
+    appium:systemPort: 8201
+    appium:deviceName: Android_2
+    appium:udid: emulator-5582
+    platformName: Android
+    platformVersion: 5.0.2
+    automationName: UIAutomator2

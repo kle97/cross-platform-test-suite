@@ -1,6 +1,5 @@
 package cross.platform.test.suite.configuration.guicemodule;
 
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
@@ -9,9 +8,7 @@ import com.fasterxml.jackson.dataformat.javaprop.util.Markers;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
-import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 @Slf4j
@@ -31,6 +25,12 @@ public class ParentModule extends AbstractModule {
 
     @Override
     protected void configure() {
+    }
+
+    @Provides
+    @Singleton
+    protected DriverManager provideDriverManager() {
+        return new DriverManager();
     }
 
     @Provides
@@ -45,34 +45,6 @@ public class ParentModule extends AbstractModule {
     @Singleton
     protected JavaPropsMapper provideJavaPropsMapper() {
         return new JavaPropsMapper();
-    }
-
-    @Provides
-    @Singleton
-    protected DriverManager provideDriverManager() {
-        return new DriverManager();
-    }
-    
-    @Provides
-    @Singleton
-    protected ReportManager provideReportManager() {
-        ReportManager reportManager = new ReportManager();
-        String timeStamp = DateTimeFormatter.ofPattern("MM-dd-yyyy-HH-mm-ss")
-                                            .withZone(ZoneId.systemDefault())
-                                            .format(Instant.now());
-        String filePath = "cross-platform-test-suite" + "-" + timeStamp + ".html";
-        String reportFilePath = TestConst.REPORT_PATH + filePath;
-//        log.info(reportFilePath);
-        ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
-        spark.config().setCss(".col-md-3 > img { max-width: 180px; max-height: 260px; } .col-md-3 > .title { max-width: 180px; }");
-        reportManager.attachReporter(spark);
-        return reportManager;
-    }
-
-    @Provides
-    @Singleton
-    protected LoggingAssertion provideLoggingAssertion(ReportManager reportManager) {
-        return new LoggingAssertion(reportManager);
     }
 
     protected MobileConfig getDefaultMobileConfig(ObjectMapper objectMapper, JavaPropsMapper propsMapper) {
