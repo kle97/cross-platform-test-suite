@@ -10,6 +10,8 @@ services:
     image: selenium/node-docker:latest
     depends_on:
       - selenium-hub
+    ports:
+      - "5555:5555"
     volumes:
       - ./node-android-4723.toml:/opt/bin/config.toml
     environment:
@@ -23,6 +25,8 @@ services:
     image: selenium/node-docker:latest
     depends_on:
       - selenium-hub
+    ports:
+      - "5556:5556"
     volumes:
       - ./node-android-4724.toml:/opt/bin/config.toml
     environment:

@@ -7,9 +7,9 @@ import lombok.Value;
 @EqualsAndHashCode(callSuper = true)
 public class ServerArguments extends JsonBaseConfig {
     
-    private String address;
+    String address;
     
-    private Integer port;
+    Integer port;
     
-    private String basePath;
+    String basePath;
 }

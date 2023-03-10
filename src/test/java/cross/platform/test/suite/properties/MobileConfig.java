@@ -14,14 +14,14 @@ import java.util.Map;
 public class MobileConfig extends JsonBaseConfig {
     
     @JsonProperty("server")
-    private ServerArguments serverArguments;
+    ServerArguments serverArguments;
 
     @JsonProperty("capabilities")
-    private Map<String, String> capabilitiesMap;
+    Map<String, String> capabilitiesMap;
     
     @JsonIgnore 
     @NonFinal
-    private DesiredCapabilities desiredCapabilities;
+    DesiredCapabilities desiredCapabilities;
 
     public DesiredCapabilities getDesiredCapabilities() {
         if (this.desiredCapabilities == null) {
