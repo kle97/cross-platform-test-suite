@@ -5,6 +5,7 @@
 build/
 bin/
 out/
+test-output/
 
 
 ### miscellaneous ###

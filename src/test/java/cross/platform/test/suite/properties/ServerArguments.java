@@ -12,4 +12,6 @@ public class ServerArguments extends JsonBaseConfig {
     Integer port;
     
     String basePath;
+    
+    boolean isHub;
 }

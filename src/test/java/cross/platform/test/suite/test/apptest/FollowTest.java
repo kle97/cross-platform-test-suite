@@ -4,9 +4,9 @@ import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
+import cross.platform.test.suite.helper.ReportHelper;
+import cross.platform.test.suite.helper.ScreenshotHelper;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.test.helper.ReportHelper;
-import cross.platform.test.suite.test.helper.ScreenshotHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import javax.inject.Inject;
 
 @Slf4j
 @Guice
-@Test(groups = FollowTest.GROUP, dependsOnGroups = AdvancedTest.GROUP)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class FollowTest implements ReportHelper, ScreenshotHelper {

@@ -10,12 +10,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 
 @Slf4j
-@Test
 @Guice
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))

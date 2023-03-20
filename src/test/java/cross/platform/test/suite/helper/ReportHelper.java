@@ -1,4 +1,4 @@
-package cross.platform.test.suite.test.helper;
+package cross.platform.test.suite.helper;
 
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public interface ReportHelper {
         if (testName.isBlank()) {
             testName = "DefaultTest";
         }
-//        log.info("{} - {}", testName, className);
+       log.info("{} - {}", testName, className);
         this.getReportManager().createClassReport(className, testName);
     }
 
@@ -33,7 +33,7 @@ public interface ReportHelper {
         String testName = result.getTestName();
         String methodName = method.getMethodName();
         String description = method.getDescription();
-//        log.info("{} - {} - {} - {}", testName, className, methodName, description);
+       // log.info("{} - {} - {} - {}", testName, className, methodName, description);
         this.getReportManager().createMethodReport(methodName, description, className, testName);
         this.getReportManager().info("Description: " + description);
         LoggerFactory.getLogger(className).info("Description: " + description);

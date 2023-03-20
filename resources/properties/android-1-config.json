@@ -2,18 +2,19 @@
     "server": {
         "address": "192.168.1.14",
         "port": 4444,
-        "basePath": "wd/hub",
+        "basePath": "/wd/hub",
         "logLevel": "warn",
-        "allowInsecure": "adb_shell"
+        "allowInsecure": "adb_shell",
+        "isHub": true
     },
     "capabilities": {
         "platformName": "Android",
-        "platformVersion": "5.0.2",
-        "automationName": "UiAutomator2",
-        "newCommandTimeout": 600,
-        "appPackage": "io.appium.android.apis",
-        "appActivity": "io.appium.android.apis.ApiDemos",
-        "noReset": true,
-        "dontStopAppOnReset": true
+        "appium:platformVersion": "5.0.2",
+        "appium:automationName": "UiAutomator2",
+        "appium:newCommandTimeout": 600,
+        "appium:appPackage": "io.appium.android.apis",
+        "appium:appActivity": "io.appium.android.apis.ApiDemos",
+        "appium:noReset": true,
+        "appium:dontStopAppOnReset": true
     }
 }

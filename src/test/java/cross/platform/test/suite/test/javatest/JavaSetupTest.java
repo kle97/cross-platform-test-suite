@@ -8,14 +8,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Slf4j
 @Guice
-@Test(testName = TestConst.JAVA_TEST)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public final class JavaSetupTest extends AbstractSetupTest {

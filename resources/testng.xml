@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="defaultSuite" verbose="1" parent-module="cross.platform.test.suite.configuration.guicemodule.ParentModule">
+    <test name="AppTest">
+        <classes >
+            <class name="cross.platform.test.suite.test.apptest.AppSetupTest" />
+            <class name="cross.platform.test.suite.test.apptest.AdvancedTest" />
+            <class name="cross.platform.test.suite.test.apptest.FollowTest" />
+        </classes>
+    </test>
+
+    <test name="JavaTest">
+        <classes>
+            <class name="cross.platform.test.suite.test.javatest.JavaSetupTest"/>
+            <class name="cross.platform.test.suite.test.javatest.JavaTest"/>
+        </classes>
+    </test>
+</suite>

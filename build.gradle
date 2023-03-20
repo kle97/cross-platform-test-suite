@@ -59,6 +59,33 @@ sourceSets {
     }
 }
 
+tasks.register("testng", JavaExec) {
+    description = "Run TestNG tests from command line."
+    group = "verification"
+    dependsOn testClasses
+    mainClass.set("org.testng.TestNG")
+    classpath += sourceSets.test.runtimeClasspath
+
+    systemProperties System.getProperties()
+    def xmlFile = System.getProperty("xmlFiles", "resources/testng.xml")
+    def arguments = [xmlFile]
+    def parallel = System.getProperty("parallel", "false")
+    def testNames = System.getProperty("tests", "")
+    if (!testNames.isBlank()) {
+        arguments.add("-testnames")
+        arguments.add(testNames)
+    }
+    if (parallel == "true") {
+        arguments.add("-parallel")
+        arguments.add("tests")
+        arguments.add("-threadcount")
+        arguments.add("4")
+    }
+    arguments.add("-usedefaultlisteners")
+    arguments.add("false")
+    args = arguments
+}
+
 test {
     // pass all system properties to java code
     systemProperties System.getProperties()
@@ -67,13 +94,19 @@ test {
 
     // Use TestNG for unit tests.
     useTestNG() {
-        listeners << "cross.platform.test.suite.configuration.listener.TestNGAlterListener"
+//        listeners << "cross.platform.test.suite.configuration.listener.TestNGAlterListener"
+        suites "resources/testng.xml"
         if (parallelEnabled == "true") {
             parallel = "tests"
             threadCount = 4
         }
         testName = ""
         suiteName = "defaultSuite"
+         
+        preserveOrder = true
+        doFirst {
+            println outputDirectory.toString()
+        }
     }
 
     outputs.upToDateWhen { false }

@@ -89,7 +89,7 @@ public class ParentModule extends AbstractModule {
                                                          .withFirstArrayOffset(0)
                                                          .withIndexMarker(Markers.create("[", "]"));
             Properties configAsProperties = propsMapper.writeValueAsProperties(config, propsSchema);
-            for (String systemPropertiesKey : System.getProperties().stringPropertyNames()) {
+            for (String systemPropertiesKey: System.getProperties().stringPropertyNames()) {
                 String systemPropertiesValue = System.getProperty(systemPropertiesKey);
                 if (configAsProperties.containsKey(systemPropertiesKey)) {
                     configAsProperties.setProperty(systemPropertiesKey, systemPropertiesValue);

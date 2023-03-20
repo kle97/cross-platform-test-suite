@@ -1,8 +1,0 @@
-[distributor]
-reject-unsupported-caps = false
-
-[server]
-port = 4444
-
-[logging]
-tracing = false

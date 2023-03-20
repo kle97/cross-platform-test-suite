@@ -5,9 +5,9 @@ import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
+import cross.platform.test.suite.helper.ReportHelper;
+import cross.platform.test.suite.helper.ScreenshotHelper;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.test.helper.ReportHelper;
-import cross.platform.test.suite.test.helper.ScreenshotHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,12 @@ import javax.inject.Named;
 
 @Slf4j
 @Guice
-@Test(testName = TestConst.JAVA_TEST, groups = JavaTest.GROUP)
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class JavaTest implements ReportHelper, ScreenshotHelper {
 
     public static final String GROUP = "JavaTest";
-
+    
     @Named(TestConst.ANDROID_2_CONFIG_PATH)
     private final MobileConfig mobileConfig;
     private final DriverManager driverManager;

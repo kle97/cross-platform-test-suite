@@ -1,4 +1,4 @@
-package cross.platform.test.suite.test.helper;
+package cross.platform.test.suite.helper;
 
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
