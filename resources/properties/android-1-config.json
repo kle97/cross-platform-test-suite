@@ -9,7 +9,7 @@
     },
     "capabilities": {
         "platformName": "Android",
-        "appium:platformVersion": "5.0.2",
+        "appium:platformVersion": "8.1.0",
         "appium:automationName": "UiAutomator2",
         "appium:newCommandTimeout": 600,
         "appium:appPackage": "io.appium.android.apis",

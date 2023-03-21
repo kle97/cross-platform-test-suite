@@ -55,6 +55,14 @@ public final class ReportManager {
     public boolean hasCurrentReport() {
         return this.currentReport != null;
     }
+    
+    public ExtentTest getClassReport(String className) {
+        if (this.hasClassReport(className)) {
+            return classReportMap.get(className);
+        } else {
+            return null;
+        }
+    }
 
     public ExtentTest createClassReport(String className, String testTag) {
         if (this.hasClassReport(className)) {

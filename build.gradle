@@ -30,6 +30,8 @@ dependencies {
 
             // Appium java client
             "io.appium:java-client:8.3.0",
+            
+            "org.seleniumhq.selenium:selenium-java:4.8.1",
 
             // Extent reports
             "com.aventstack:extentreports:5.0.9",

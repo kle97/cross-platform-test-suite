@@ -2,11 +2,14 @@
     "server": {
         "address": "192.168.1.14",
         "port": 4444,
+        "basePath": "/wd/hub",
+        "logLevel": "warn",
+        "allowInsecure": "adb_shell",
         "isHub": true
     },
     "capabilities": {
         "platformName": "Android",
-        "appium:platformVersion": "5.0.2",
+        "appium:platformVersion": "8.1.0",
         "appium:automationName": "UiAutomator2",
         "appium:newCommandTimeout": 600,
         "appium:appPackage": "io.appium.android.apis",

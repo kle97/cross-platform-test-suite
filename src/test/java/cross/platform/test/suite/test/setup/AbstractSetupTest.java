@@ -19,7 +19,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
@@ -41,7 +40,7 @@ public abstract class AbstractSetupTest {
     protected abstract MobileConfig getMobileConfig();
 
     protected abstract DriverManager getDriverManager();
-
+    
     @BeforeSuite(alwaysRun = true)
     protected void beforeSuite() {
         String timeStamp = DateTimeFormatter.ofPattern("MM-dd-yyyy-HH-mm-ss")
@@ -87,8 +86,7 @@ public abstract class AbstractSetupTest {
     }
 
     @BeforeTest(alwaysRun = true)
-    protected void beforeTest(ITestContext context) {
-        log.info("BeforeTest: " + context.getName());
+    protected void beforeTest() {
         if (Boolean.parseBoolean(System.getProperty("parallel"))) {
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 this.startServer();

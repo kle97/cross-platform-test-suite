@@ -17,6 +17,7 @@ public class LoggingAssertion extends Assertion {
     private static final Map<AssertionError, IAssert<?>> errorMap = new ConcurrentHashMap<>();
     private ReportManager reportManager;
     private final Logger log;
+    private int localErrorCount;
 
     public LoggingAssertion(ReportManager reportManager, Logger log) {
         this.reportManager = reportManager;
@@ -30,9 +31,14 @@ public class LoggingAssertion extends Assertion {
     public LoggingAssertion() {
         this.log = LoggerFactory.getLogger(LoggingAssertion.class);
     }
+    
+    public int getLocalErrorCount() {
+        return this.localErrorCount;
+    }
 
     @Override
     public void onAssertFailure(IAssert<?> assertCommand, AssertionError ex) {
+        this.localErrorCount++;
         String message = this.getAssertMessage(assertCommand);
         this.logFail(message);
     }
