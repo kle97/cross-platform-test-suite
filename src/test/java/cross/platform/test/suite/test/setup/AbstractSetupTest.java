@@ -7,6 +7,7 @@ import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.properties.ServerArguments;
+import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
@@ -34,13 +35,13 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 public abstract class AbstractSetupTest {
-    
+
     private AppiumDriverLocalService appiumDriverLocalService;
 
     protected abstract MobileConfig getMobileConfig();
 
     protected abstract DriverManager getDriverManager();
-    
+
     @BeforeSuite(alwaysRun = true)
     protected void beforeSuite() {
         String timeStamp = DateTimeFormatter.ofPattern("MM-dd-yyyy-HH-mm-ss")
@@ -56,7 +57,7 @@ public abstract class AbstractSetupTest {
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 this.startServer();
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(this::stopSession));
+            Runtime.getRuntime().addShutdownHook(new Thread(this::cleanUpSessionHook));
             this.startSession();
         }
     }
@@ -91,7 +92,7 @@ public abstract class AbstractSetupTest {
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 this.startServer();
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(this::stopSession));
+            Runtime.getRuntime().addShutdownHook(new Thread(this::cleanUpSessionHook));
             this.startSession();
         }
     }
@@ -152,6 +153,13 @@ public abstract class AbstractSetupTest {
             this.getDriverManager().removeDriver();
             log.info("Driver session with id '{}' has quit!", id);
         }
+    }
+
+    protected void cleanUpSessionHook() {
+        if (this.getDriverManager().hasDriver()) {
+            ScreenUtil.stopRecordingScreen(this.getDriverManager().getDriver());
+        }
+        this.stopSession();
     }
 
     protected void startServer() {

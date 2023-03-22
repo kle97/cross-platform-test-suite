@@ -1,5 +1,6 @@
 package cross.platform.test.suite.test.apptest;
 
+import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
@@ -37,6 +38,7 @@ public class FollowTest implements ReportHelper, ScreenshotHelper, ScreenRecordi
     }
 
     @Screenshot
+    @ScreenRecord
     @Test(description = "followTest description...")
     public void followTest() {
         log.debug(this.mobileConfig.getServerArguments().getAddress());
@@ -51,6 +53,7 @@ public class FollowTest implements ReportHelper, ScreenshotHelper, ScreenRecordi
     }
 
     @Screenshot
+    @ScreenRecord
     @Test(description = "followTest2 description...", dependsOnMethods = "followTest")
     public void followTest2() {
         ApiListPage apiListPage = PageObjectFactory.getApiListPage(getAppiumDriver());

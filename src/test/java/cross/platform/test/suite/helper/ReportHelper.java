@@ -1,6 +1,7 @@
 package cross.platform.test.suite.helper;
 
 import cross.platform.test.suite.configuration.manager.ReportManager;
+import cross.platform.test.suite.constant.TestConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
@@ -20,7 +21,7 @@ public interface ReportHelper {
         String className = this.getClass().getSimpleName();
         String testName = context.getName();
         if (testName.isBlank()) {
-            testName = "DefaultTest";
+            testName = TestConst.DEFAULT_TEST_NAME;
         }
         log.info("{} - {}", testName, className);
         this.getReportManager().createClassReport(className, testName);

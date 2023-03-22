@@ -1,6 +1,6 @@
 package cross.platform.test.suite.annotation;
 
-import cross.platform.test.suite.constant.Position;
+import cross.platform.test.suite.constant.TestConst;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Screenshot {
+public @interface ScreenRecord {
     
-    Position position() default Position.BOTH;
+    int timeLimit() default TestConst.DEFAULT_RECORDING_LIMIT_IN_SECONDS;
 }
