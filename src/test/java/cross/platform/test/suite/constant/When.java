@@ -1,6 +1,6 @@
 package cross.platform.test.suite.constant;
 
-public enum Position {
+public enum When {
     BEFORE,
     AFTER,
     BOTH

@@ -1,5 +1,6 @@
 package cross.platform.test.suite.helper;
 
+import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.configuration.manager.DriverManager;
@@ -38,7 +39,8 @@ public interface ScreenRecordingHelper {
             screenRecordAnnotation = getClass().getAnnotation(ScreenRecord.class);
         }
         if (screenRecordAnnotation != null) {
-            if (getReportManager().hasCurrentReport() && getReportManager().getCurrentReport().getStatus().equals(Status.FAIL)) {
+            ExtentTest currentReport = getReportManager().getCurrentReport();
+            if (currentReport != null && currentReport.getStatus().equals(Status.FAIL)) {
                 this.stopRecordingScreen(this.getClass().getSimpleName());
             } else {
                 ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());

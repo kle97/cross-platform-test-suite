@@ -1,6 +1,6 @@
 package cross.platform.test.suite.annotation;
 
-import cross.platform.test.suite.constant.Position;
+import cross.platform.test.suite.constant.When;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Screenshot {
     
-    Position position() default Position.BOTH;
+    When when() default When.BOTH;
 }

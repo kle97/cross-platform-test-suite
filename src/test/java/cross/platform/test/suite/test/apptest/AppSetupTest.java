@@ -5,7 +5,7 @@ package cross.platform.test.suite.test.apptest;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.test.setup.AbstractSetupTest;
+import cross.platform.test.suite.test.common.AbstractSetupTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

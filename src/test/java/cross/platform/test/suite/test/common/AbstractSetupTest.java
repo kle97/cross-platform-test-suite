@@ -1,4 +1,4 @@
-package cross.platform.test.suite.test.setup;
+package cross.platform.test.suite.test.common;
 
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import cross.platform.test.suite.assertion.LoggingAssertion;

@@ -5,12 +5,10 @@ import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
-import cross.platform.test.suite.helper.ReportHelper;
-import cross.platform.test.suite.helper.ScreenRecordingHelper;
-import cross.platform.test.suite.helper.ScreenshotHelper;
 import cross.platform.test.suite.pageobject.ApiListPage;
 import cross.platform.test.suite.pageobject.PageObjectFactory;
 import cross.platform.test.suite.properties.MobileConfig;
+import cross.platform.test.suite.test.common.BaseTest;
 import io.appium.java_client.AppiumDriver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ import javax.inject.Inject;
 @Guice
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class FollowTest implements ReportHelper, ScreenshotHelper, ScreenRecordingHelper {
+public class FollowTest extends BaseTest {
 
     public static final String GROUP = "FollowTest";
 
@@ -52,7 +50,7 @@ public class FollowTest implements ReportHelper, ScreenshotHelper, ScreenRecordi
         assertion.assertEquals("Check Cancel button label", "Cancel", "Cancel");
     }
 
-    @Screenshot
+    @Screenshot 
     @ScreenRecord
     @Test(description = "followTest2 description...", dependsOnMethods = "followTest")
     public void followTest2() {
@@ -64,7 +62,7 @@ public class FollowTest implements ReportHelper, ScreenshotHelper, ScreenRecordi
         apiListPage.back();
         assertion.assertEquals("Check page title", "Follow page", "Follow page");
         assertion.assertEquals("Check delete button label", "Delete", "Delete");
-        assertion.assertEquals("Check copy button label", "Copy", "Copy");
+        assertion.assertEquals("Check copy button label", "copy", "Copy");
         assertion.assertEquals("Check edit button label", "Edit", "Edit");
     }
 }

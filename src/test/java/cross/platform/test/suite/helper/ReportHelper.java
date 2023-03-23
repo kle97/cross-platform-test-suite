@@ -23,7 +23,7 @@ public interface ReportHelper {
         if (testName.isBlank()) {
             testName = TestConst.DEFAULT_TEST_NAME;
         }
-        log.info("{} - {}", testName, className);
+        // log.info("{} - {}", testName, className);
         this.getReportManager().createClassReport(className, testName);
     }
 

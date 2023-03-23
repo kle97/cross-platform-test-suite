@@ -3,7 +3,7 @@ package cross.platform.test.suite.helper;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
-import cross.platform.test.suite.constant.Position;
+import cross.platform.test.suite.constant.When;
 import cross.platform.test.suite.utility.ScreenUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -51,7 +51,7 @@ public interface ScreenshotHelper {
         if (methodAnnotation == null) {
             methodAnnotation = getClass().getAnnotation(Screenshot.class);
         }
-        return methodAnnotation != null && (methodAnnotation.position().equals(Position.BOTH) || methodAnnotation.position().equals(Position.BEFORE));
+        return methodAnnotation != null && (methodAnnotation.when().equals(When.BOTH) || methodAnnotation.when().equals(When.BEFORE));
     }
 
     private boolean canScreenshotAfter(Method method) {
@@ -62,6 +62,6 @@ public interface ScreenshotHelper {
         if (annotation == null) {
             annotation = getClass().getAnnotation(Screenshot.class);
         }
-        return annotation != null && (annotation.position().equals(Position.BOTH) || annotation.position().equals(Position.AFTER));
+        return annotation != null && (annotation.when().equals(When.BOTH) || annotation.when().equals(When.AFTER));
     }
 }
