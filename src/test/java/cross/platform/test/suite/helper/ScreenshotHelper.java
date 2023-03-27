@@ -1,5 +1,8 @@
 package cross.platform.test.suite.helper;
 
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
@@ -19,8 +22,9 @@ public interface ScreenshotHelper {
 
     @BeforeMethod
     default void screenshotHelperBeforeMethod(Method method) {
-        if (canScreenshotBefore(method)) {
-            String methodName = method.getName();
+        String methodName = method.getName();
+        Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
+        if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
             String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
             this.takeScreenshot(screenshotTitle);
         }
@@ -28,40 +32,30 @@ public interface ScreenshotHelper {
 
     @AfterMethod
     default void screenshotHelperAfterMethod(Method method) {
-        if (canScreenshotAfter(method)) {
+        Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
+        if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.AFTER))) {
+            ExtentTest methodReport = getReportManager().findReport(method.getName());
             String methodName = method.getName();
             String screenshotTitle = "after" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-            this.takeScreenshot(screenshotTitle);
+            this.takeScreenshot(methodReport, screenshotTitle);
         }
     }
 
     @Test(enabled = false)
     default void takeScreenshot(String screenshotTitle) {
-        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), screenshotTitle);
-        if (screenshotFile != null) {
-            getReportManager().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
-        }
-    }
-    
-    private boolean canScreenshotBefore(Method method) {
-        if (method == null) {
-            return false;
-        }
-        Screenshot methodAnnotation = method.getDeclaredAnnotation(Screenshot.class);
-        if (methodAnnotation == null) {
-            methodAnnotation = getClass().getAnnotation(Screenshot.class);
-        }
-        return methodAnnotation != null && (methodAnnotation.when().equals(When.BOTH) || methodAnnotation.when().equals(When.BEFORE));
+        takeScreenshot(null, screenshotTitle);
     }
 
-    private boolean canScreenshotAfter(Method method) {
-        if (method == null) {
-            return false;
+    @Test(enabled = false)
+    default void takeScreenshot(ExtentTest report, String screenshotTitle) {
+        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), screenshotTitle);
+        if (screenshotFile != null) {
+            if (report != null) {
+                Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotFile.getAbsolutePath(), screenshotTitle).build();
+                report.info(media);
+            } else {
+                getReportManager().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
+            }
         }
-        Screenshot annotation = method.getDeclaredAnnotation(Screenshot.class);
-        if (annotation == null) {
-            annotation = getClass().getAnnotation(Screenshot.class);
-        }
-        return annotation != null && (annotation.when().equals(When.BOTH) || annotation.when().equals(When.AFTER));
     }
 }

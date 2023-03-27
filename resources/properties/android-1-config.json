@@ -1,6 +1,6 @@
 {
     "server": {
-        "address": "192.168.1.14",
+        "address": "x.x.x.x",
         "port": 4444,
         "basePath": "/wd/hub",
         "logLevel": "warn",
@@ -14,7 +14,6 @@
         "appium:newCommandTimeout": 600,
         "appium:appPackage": "io.appium.android.apis",
         "appium:appActivity": "io.appium.android.apis.ApiDemos",
-        "appium:noReset": true,
         "appium:dontStopAppOnReset": true
     }
 }

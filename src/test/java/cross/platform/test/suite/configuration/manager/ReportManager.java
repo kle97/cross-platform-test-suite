@@ -9,15 +9,15 @@ import com.aventstack.extentreports.observer.ExtentObserver;
 import com.aventstack.extentreports.reporter.AbstractFileReporter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ListIterator;
 
 public final class ReportManager {
     private static final ExtentReports extentReports = new ExtentReports();
     private static final List<String> reporterFilePaths = new ArrayList<>();
 
-    private final Map<String, ExtentTest> classReportMap = new HashMap<>();
+    private ExtentTest currentClassReport;
+    private final List<ExtentTest> currentReportList = new ArrayList<>();
     private ExtentTest currentReport;
 
     public static List<String> getReporterFilePaths() {
@@ -44,10 +44,14 @@ public final class ReportManager {
         extentReports.flush();
     }
 
-    public boolean hasClassReport(String className) {
-        return this.classReportMap.containsKey(className);
+    public boolean hasClassReport() {
+        return this.currentClassReport != null;
     }
 
+    public ExtentTest getCurrentClassReport() {
+        return this.currentClassReport;
+    }
+    
     public ExtentTest getCurrentReport() {
         return this.currentReport;
     }
@@ -56,24 +60,16 @@ public final class ReportManager {
         return this.currentReport != null;
     }
     
-    public ExtentTest getClassReport(String className) {
-        if (this.hasClassReport(className)) {
-            return classReportMap.get(className);
-        } else {
-            return null;
-        }
-    }
-
-    public ExtentTest createClassReport(String className, String testTag) {
-        if (this.hasClassReport(className)) {
-            return classReportMap.get(className);
+    public ExtentTest createClassReport(String className, String testTag) { 
+        if (this.hasClassReport()) {
+            return this.currentClassReport;
         }
 
         ExtentTest classReport = extentReports.createTest(className);
         if (testTag != null) {
             classReport.assignCategory(testTag);
         }
-        classReportMap.put(className, classReport);
+        this.currentClassReport = classReport;
         return classReport;
     }
 
@@ -83,40 +79,64 @@ public final class ReportManager {
 
     public ExtentTest createMethodReport(String reportName, String description, String className, String testName) {
         ExtentTest classReport;
-        if (this.hasClassReport(className)) {
-            classReport = this.classReportMap.get(className);
+        if (this.hasClassReport()) {
+            classReport = this.currentClassReport;
         } else {
             classReport = this.createClassReport(className, testName);
         }
         ExtentTest report = classReport.createNode(reportName, description);
-        currentReport = report;
+        this.currentReport = report;
+        this.currentReportList.add(report);
         return report;
     }
 
-    public ExtentTest appendNodeToCurrentReport(String reportName) {
-        return this.appendNodeToCurrentReport(reportName, null);
+    public ExtentTest appendChildReport(String parentReportName, String reportName) {
+        return this.appendChildReport(parentReportName, reportName, null);
     }
 
-    public ExtentTest appendNodeToCurrentReport(String reportName, String description) {
-        if (this.hasCurrentReport()) {
-            ExtentTest currentReport = this.currentReport;
-            return currentReport.createNode(reportName, description);
+    public ExtentTest appendChildReport(String parentReportName, String reportName, String description) {
+        ExtentTest parentReport = this.findReport(parentReportName);
+        if (parentReport != null) {
+            ExtentTest childReport = parentReport.createNode(reportName, description);
+            this.currentReport = childReport;
+            return childReport;
         }
-
+        return null;
+    }
+    
+    public void setCurrentReport(String reportName) {
+        ExtentTest report = this.findReport(reportName);
+        if (report != null) {
+            this.currentReport = report;
+        }
+    }
+    
+    public ExtentTest findReport(String reportName) {
+        ListIterator<ExtentTest> iterator = this.currentReportList.listIterator(this.currentReportList.size());
+        while (iterator.hasPrevious()) {
+            ExtentTest report = iterator.previous();
+            if (report.getModel().getName().equals(reportName)) {
+                return report;
+            }
+        }
         return null;
     }
 
     public void removeReport(ExtentTest report) {
-        this.removeReport(report.getModel().getName());
+        extentReports.removeTest(report);
+        this.currentReportList.remove(report);
     }
 
     public void removeReport(String reportName) {
-        extentReports.removeTest(reportName);
+        this.currentReportList.stream()
+                              .filter(t -> t.getModel().getName().equals(reportName))
+                              .findFirst()
+                              .ifPresent(extentReports::removeTest);
     }
 
     public void removeCurrentReport() {
         if (this.hasCurrentReport()) {
-            extentReports.removeTest(this.getCurrentReport());
+            this.removeReport(this.getCurrentReport());
         }
     }
 
@@ -168,7 +188,7 @@ public final class ReportManager {
         return this.log(Status.FAIL, message, throwable, media);
     }
 
-    private ExtentTest log(Status status, String message, Throwable throwable, Media media) {
+    public ExtentTest log(Status status, String message, Throwable throwable, Media media) {
         ExtentTest currentReport = this.getCurrentReport();
         if (currentReport != null) {
             currentReport.log(status, message, throwable, media);

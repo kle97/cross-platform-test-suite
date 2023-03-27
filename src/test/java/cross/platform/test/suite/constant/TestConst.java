@@ -17,5 +17,5 @@ public final class TestConst {
     public static final int APPIUM_SERVER_START_RETRIES = 3;
     public static final int APPIUM_SESSION_START_RETRIES = 3;
     public static final int DEFAULT_RECORDING_LIMIT_IN_SECONDS = 1800;
-    public static final int DEFAULT_RECORDING_DELAY = 1000;
+    public static final int DEFAULT_RECORDING_DELAY = 200;
 }

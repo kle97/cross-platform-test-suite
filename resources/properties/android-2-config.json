@@ -1,6 +1,6 @@
 {
     "server": {
-        "address": "192.168.1.14",
+        "address": "x.x.x.x",
         "port": 4444,
         "basePath": "/wd/hub",
         "logLevel": "warn",

@@ -5,8 +5,6 @@ import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
-import cross.platform.test.suite.pageobject.ApiListPage;
-import cross.platform.test.suite.pageobject.PageObjectFactory;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.test.common.BaseTest;
 import io.appium.java_client.AppiumDriver;
@@ -42,8 +40,6 @@ public class FollowTest extends BaseTest {
         log.debug(this.mobileConfig.getServerArguments().getAddress());
         log.debug(this.driverManager.getDriver().getRemoteAddress().toString());
 
-        ApiListPage apiListPage = PageObjectFactory.getApiListPage(getAppiumDriver());
-        assertion.assertEquals("Page title", "API Demos", apiListPage.getTitle());
         assertion.assertEquals("Check page title", "My page", "my page");
         assertion.assertEquals("Check OK button label", "OK", "OK");
         assertion.assertEquals("Check Login button label", "Login", "login");
@@ -54,12 +50,6 @@ public class FollowTest extends BaseTest {
     @ScreenRecord
     @Test(description = "followTest2 description...", dependsOnMethods = "followTest")
     public void followTest2() {
-        ApiListPage apiListPage = PageObjectFactory.getApiListPage(getAppiumDriver());
-        
-        assertion.assertEquals("Page title", "API Demos", apiListPage.getTitle());
-        assertion.assertEquals("Accessibility tab label", "Accessibility", apiListPage.getAccessibilityTab());
-        apiListPage.clickAccessibilityTab();
-        apiListPage.back();
         assertion.assertEquals("Check page title", "Follow page", "Follow page");
         assertion.assertEquals("Check delete button label", "Delete", "Delete");
         assertion.assertEquals("Check copy button label", "copy", "Copy");

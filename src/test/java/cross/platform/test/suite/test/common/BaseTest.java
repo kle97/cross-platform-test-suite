@@ -1,6 +1,8 @@
 package cross.platform.test.suite.test.common;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
@@ -27,7 +29,7 @@ import java.nio.file.Path;
 
 @Slf4j
 public abstract class BaseTest {
-
+    
     public abstract ReportManager getReportManager();
     public abstract DriverManager getDriverManager();
 
@@ -42,7 +44,7 @@ public abstract class BaseTest {
     }
 
     @BeforeMethod
-    protected void reportHelperBeforeMethod(ITestResult result, Method method) {
+    protected void beforeMethod(ITestResult result, Method method) {
         ITestNGMethod testMethod = result.getMethod();
         String className = testMethod.getRealClass().getSimpleName();
         String testName = result.getTestName();
@@ -53,43 +55,32 @@ public abstract class BaseTest {
         LoggerFactory.getLogger(className).info("Description: " + description);
 
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
-        if (screenshotAnnotation == null) {
-            screenshotAnnotation = getClass().getAnnotation(Screenshot.class);
-        }
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
             String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
             this.takeScreenshot(screenshotTitle);
         }
 
         ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
-        if (screenRecordAnnotation == null) {
-            screenRecordAnnotation = getClass().getAnnotation(ScreenRecord.class);
-        }
         if (screenRecordAnnotation != null) {
             this.startRecordingScreen(screenRecordAnnotation.timeLimit());
         }
     }
 
     @AfterMethod
-    protected void screenshotHelperAfterMethod(Method method) {
+    protected void afterMethod(Method method) {
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
-        if (screenshotAnnotation == null) {
-            screenshotAnnotation = getClass().getAnnotation(Screenshot.class);
-        }
+        ExtentTest methodReport = getReportManager().findReport(method.getName());
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.AFTER))) {
             String methodName = method.getName();
             String screenshotTitle = "after" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-            this.takeScreenshot(screenshotTitle);
+            this.takeScreenshot(methodReport, screenshotTitle);
         }
 
         ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
-        if (screenRecordAnnotation == null) {
-            screenRecordAnnotation = getClass().getAnnotation(ScreenRecord.class);
-        }
         if (screenRecordAnnotation != null) {
-            ExtentTest currentReport = getReportManager().getCurrentReport();
-            if (currentReport != null && currentReport.getStatus().getName().equals("Fail")) {
-                this.stopRecordingScreen(this.getClass().getSimpleName());
+            
+            if (methodReport != null && methodReport.getStatus().getName().equals("Fail")) {
+                this.stopRecordingScreen(methodReport, this.getClass().getSimpleName());
             } else {
                 ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());
             }
@@ -98,9 +89,19 @@ public abstract class BaseTest {
 
     @Test(enabled = false)
     protected void takeScreenshot(String screenshotTitle) {
+        this.takeScreenshot(null, screenshotTitle);
+    }
+
+    @Test(enabled = false)
+    protected void takeScreenshot(ExtentTest report, String screenshotTitle) {
         File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), screenshotTitle);
         if (screenshotFile != null) {
-            getReportManager().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
+            if (report != null) {
+                Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotFile.getAbsolutePath(), screenshotTitle).build();
+                report.info(media);
+            } else {
+                getReportManager().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
+            }
         }
     }
 
@@ -111,16 +112,25 @@ public abstract class BaseTest {
 
     @Test(enabled = false)
     protected void stopRecordingScreen(String recordingTitle) {
+        this.stopRecordingScreen(null, recordingTitle);
+    }
+
+    @Test(enabled = false)
+    protected void stopRecordingScreen(ExtentTest report, String recordingTitle) {
         AppiumDriver appiumDriver = getDriverManager().getDriver();
+        Dimension dimension = DriverUtil.getWindowSize(appiumDriver);
+        int width = dimension.getWidth();
+        int height = dimension.getHeight();
         Path recordingPath = ScreenUtil.stopRecordingScreen(appiumDriver, recordingTitle);
         if (recordingPath != null) {
-            Dimension dimension = DriverUtil.getWindowSize(appiumDriver);
-            int width = dimension.getWidth();
-            int height = dimension.getHeight();
             String source = "file:///".concat(recordingPath.toAbsolutePath().toString());
-            getReportManager().info("<video width='" + width + "' height='" + height + "' controls> " +
-                                            "<source src='" + source + "' type='video/mp4'>  " +
-                                            "Your browser does not support the video tag.</video>");
+            String attachment = "<video width='" + width + "' height='" + height + "' controls> " +
+                    "<source src='" + source + "' type='video/mp4'> Your browser does not support the video tag.</video>";
+            if (report != null) {
+                report.info(attachment);
+            } else {
+                getReportManager().info(attachment);
+            }
         }
     }
 }
