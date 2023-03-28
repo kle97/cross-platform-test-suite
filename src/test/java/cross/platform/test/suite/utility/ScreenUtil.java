@@ -127,7 +127,8 @@ public final class ScreenUtil {
                     String base64EncodedVideo = ((CanRecordScreen) appiumDriver).stopRecordingScreen();
                     byte[] decodedVideo = Base64.getDecoder().decode(base64EncodedVideo);
                     String timestamp = String.valueOf(System.currentTimeMillis());
-                    String fileName = TestConst.SCREEN_RECORDING_PATH + recordingTitle + "-" + timestamp + ".mp4";
+                    String fileName = TestConst.SCREEN_RECORDING_PATH + recordingTitle + "-"
+                            + timestamp + "." + TestConst.DEFAULT_VIDEO_FORMAT;
                     Path path = Paths.get(fileName);
                     return Files.write(path, decodedVideo);
                 }

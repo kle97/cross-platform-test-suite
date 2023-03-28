@@ -60,16 +60,23 @@ public final class ReportManager {
         return this.currentReport != null;
     }
     
-    public ExtentTest createClassReport(String className, String testTag) { 
+    public ExtentTest createClassReport(String className, String testTag) {
+        return this.createClassReport(className, null, testTag);
+    }
+    
+    public ExtentTest createClassReport(String className, String description, String testTag) { 
         if (this.hasClassReport()) {
             return this.currentClassReport;
         }
 
-        ExtentTest classReport = extentReports.createTest(className);
+        ExtentTest classReport = description == null 
+                ? extentReports.createTest(className) 
+                : extentReports.createTest(className, description);
         if (testTag != null) {
             classReport.assignCategory(testTag);
         }
         this.currentClassReport = classReport;
+        this.currentReport = classReport;
         return classReport;
     }
 

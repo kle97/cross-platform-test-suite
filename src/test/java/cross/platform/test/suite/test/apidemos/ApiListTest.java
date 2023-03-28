@@ -12,17 +12,19 @@ import io.appium.java_client.AppiumDriver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
-import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
 @Guice
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@ScreenRecord
 public class ApiListTest extends BaseTest {
 
     private final DriverManager driverManager;
@@ -33,19 +35,24 @@ public class ApiListTest extends BaseTest {
         return this.driverManager.getDriver();
     }
     
+    @DataProvider(name = "tabLabelProvider")
+    public Iterator<Object[]> tabLabelProvider() {
+        List<String> tabLabelList = List.of("Access'ibility", "Accessibility", "Animation", "App", "Content",
+                                            "Graphics", "Media", "NFC", "OS", "Preference", "Text", "Views");
+        return tabLabelList.stream().map(tab -> new Object[] {tab}).iterator();
+    }
+
     @Screenshot
-    @ScreenRecord
-    @Test(description = "verify Api Demos list.")
-    public void verifyApiList(Method method) {
+    @Test
+    public void verifyPageTitle() {
         ApiListPage apiListPage = PageObjectFactory.getApiListPage(getDriver());
-        
         assertion.assertEquals("Title", "Api Demos", apiListPage.getTitle());
-        List<String> tabLabelList = List.of("Access'ibility", "Accessibility", "Animation", "App", "Content", 
-                                       "Graphics", "Media", "NFC", "OS", "Preference", "Text", "Views");
-        for (String tabLabel: tabLabelList) {
-            reportManager.appendChildReport(method.getName(), tabLabel);
-            assertion.assertEquals(tabLabel + " tab label", tabLabel, apiListPage.getTabLabel(tabLabel));
-            takeScreenshot(tabLabel);
-        }
+    }
+    
+    @Screenshot
+    @Test(dataProvider = "tabLabelProvider", dependsOnMethods = "verifyPageTitle")
+    public void verifyApiList(String tabLabel) {
+        ApiListPage apiListPage = PageObjectFactory.getApiListPage(getDriver());
+        assertion.assertEquals(tabLabel + " tab label", tabLabel, apiListPage.getTabLabel(tabLabel));
     }
 }

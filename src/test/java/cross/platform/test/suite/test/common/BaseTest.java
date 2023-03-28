@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -34,13 +31,31 @@ public abstract class BaseTest {
     public abstract DriverManager getDriverManager();
 
     @BeforeClass
-    protected void reportHelperBeforeClass(ITestContext context) {
+    protected void beforeClass(ITestContext context) {
         String className = this.getClass().getSimpleName();
         String testName = context.getName();
         if (testName.isBlank()) {
             testName = TestConst.DEFAULT_TEST_NAME;
         }
         this.getReportManager().createClassReport(className, testName);
+
+        ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
+        if (screenRecordAnnotation != null) {
+            this.startRecordingScreen(screenRecordAnnotation.timeLimit());
+        }
+    }
+    
+    @AfterClass
+    protected void afterClass() {
+        ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
+        if (screenRecordAnnotation != null) {
+            ExtentTest classReport = getReportManager().getCurrentClassReport();
+            if (classReport != null && classReport.getStatus().getName().equals("Fail")) {
+                this.stopRecordingScreen(classReport, this.getClass().getSimpleName());
+            } else {
+                ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());
+            }
+        }
     }
 
     @BeforeMethod
@@ -51,8 +66,11 @@ public abstract class BaseTest {
         String methodName = testMethod.getMethodName();
         String description = testMethod.getDescription();
         this.getReportManager().createMethodReport(methodName, description, className, testName);
-        this.getReportManager().info("Description: " + description);
-        LoggerFactory.getLogger(className).info("Description: " + description);
+        if (!description.isBlank()) {
+            this.getReportManager().info("Description: " + description);
+            LoggerFactory.getLogger(className).info("Description: " + description);
+        }
+        
 
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
@@ -60,9 +78,11 @@ public abstract class BaseTest {
             this.takeScreenshot(screenshotTitle);
         }
 
-        ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
-        if (screenRecordAnnotation != null) {
-            this.startRecordingScreen(screenRecordAnnotation.timeLimit());
+        if (this.getClass().getAnnotation(ScreenRecord.class) == null) {
+            ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
+            if (screenRecordAnnotation != null) {
+                this.startRecordingScreen(screenRecordAnnotation.timeLimit());
+            }
         }
     }
 
@@ -76,14 +96,15 @@ public abstract class BaseTest {
             this.takeScreenshot(methodReport, screenshotTitle);
         }
 
-        ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
-        if (screenRecordAnnotation != null) {
-            
-            if (methodReport != null && methodReport.getStatus().getName().equals("Fail")) {
-                this.stopRecordingScreen(methodReport, this.getClass().getSimpleName());
-            } else {
-                ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());
-            }
+        if (this.getClass().getAnnotation(ScreenRecord.class) == null) {
+            ScreenRecord screenRecordAnnotation = method.getDeclaredAnnotation(ScreenRecord.class);
+            if (screenRecordAnnotation != null) {
+                if (methodReport != null && methodReport.getStatus().getName().equals("Fail")) {
+                    this.stopRecordingScreen(methodReport, this.getClass().getSimpleName());
+                } else {
+                    ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());
+                }
+            } 
         }
     }
 
@@ -125,7 +146,8 @@ public abstract class BaseTest {
         if (recordingPath != null) {
             String source = "file:///".concat(recordingPath.toAbsolutePath().toString());
             String attachment = "<video width='" + width + "' height='" + height + "' controls> " +
-                    "<source src='" + source + "' type='video/mp4'> Your browser does not support the video tag.</video>";
+                    "<source src='" + source + "' type='video/" + TestConst.DEFAULT_VIDEO_FORMAT + "'> " +
+                    "Your browser does not support the video tag.</video>";
             if (report != null) {
                 report.info(attachment);
             } else {
