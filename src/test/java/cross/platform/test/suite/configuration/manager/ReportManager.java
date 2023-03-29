@@ -55,23 +55,23 @@ public final class ReportManager {
     public ExtentTest getCurrentReport() {
         return this.currentReport;
     }
+    
+    public void setCurrentReportName(String reportName) {
+        if (this.currentReport != null && reportName != null) {
+            this.currentReport.getModel().setName(reportName);
+        }
+    }
 
     public boolean hasCurrentReport() {
         return this.currentReport != null;
     }
     
-    public ExtentTest createClassReport(String className, String testTag) {
-        return this.createClassReport(className, null, testTag);
-    }
-    
-    public ExtentTest createClassReport(String className, String description, String testTag) { 
+    public ExtentTest createClassReport(String className, String testTag) { 
         if (this.hasClassReport()) {
             return this.currentClassReport;
         }
 
-        ExtentTest classReport = description == null 
-                ? extentReports.createTest(className) 
-                : extentReports.createTest(className, description);
+        ExtentTest classReport = extentReports.createTest(className);
         if (testTag != null) {
             classReport.assignCategory(testTag);
         }
@@ -80,18 +80,22 @@ public final class ReportManager {
         return classReport;
     }
 
-    public ExtentTest createMethodReport(String reportName, String description, String className) {
-        return this.createMethodReport(reportName, description, className, null);
+    public ExtentTest createMethodReport(String reportName) {
+        return this.createMethodReport(reportName, currentClassReport.getModel().getName(), null);
     }
 
-    public ExtentTest createMethodReport(String reportName, String description, String className, String testName) {
+    public ExtentTest createMethodReport(String reportName, String className) {
+        return this.createMethodReport(reportName, className, null);
+    }
+
+    public ExtentTest createMethodReport(String reportName, String className, String testName) {
         ExtentTest classReport;
         if (this.hasClassReport()) {
             classReport = this.currentClassReport;
         } else {
             classReport = this.createClassReport(className, testName);
         }
-        ExtentTest report = classReport.createNode(reportName, description);
+        ExtentTest report = classReport.createNode(reportName);
         this.currentReport = report;
         this.currentReportList.add(report);
         return report;

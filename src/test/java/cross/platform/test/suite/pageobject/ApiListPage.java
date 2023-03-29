@@ -40,4 +40,14 @@ public class ApiListPage extends AbstractPage {
         WebElement element = SwiperUtil.findElementInScrollableContainerWithText(getDriver(), apiListContainer, apiList, label, Direction.DOWN);
         element.click();
     }
+    
+    public void scrollToTop() {
+        for (int i = 0; i < SwiperUtil.DEFAULT_MAX_SCROLL_SEARCH; i++) {
+            String beforeScrollingPageSource = DriverUtil.getPageSource(getDriver());
+            SwiperUtil.scrollByElementSizePercentage(getDriver(), apiListContainer, Direction.UP, 0.93);
+            if (DriverUtil.getPageSource(getDriver()).equals(beforeScrollingPageSource)) {
+                break;
+            }
+        }
+    }
 }

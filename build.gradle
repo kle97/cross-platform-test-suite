@@ -68,6 +68,8 @@ tasks.register("testng", JavaExec) {
     dependsOn testClasses
     mainClass.set("org.testng.TestNG")
     classpath += sourceSets.test.runtimeClasspath
+    
+    jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
 
     systemProperties System.getProperties()
     def xmlFile = System.getProperty("xmlFiles", "resources/testng.xml")

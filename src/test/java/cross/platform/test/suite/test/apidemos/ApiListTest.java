@@ -7,6 +7,7 @@ import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.pageobject.ApiListPage;
 import cross.platform.test.suite.pageobject.PageObjectFactory;
+import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.test.common.BaseTest;
 import io.appium.java_client.AppiumDriver;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import java.util.List;
 @ScreenRecord
 public class ApiListTest extends BaseTest {
 
+    private final MobileConfig mobileConfig;
     private final DriverManager driverManager;
     private final ReportManager reportManager = new ReportManager();
     private final LoggingAssertion assertion = new LoggingAssertion(reportManager, log);
@@ -43,7 +45,7 @@ public class ApiListTest extends BaseTest {
     }
 
     @Screenshot
-    @Test
+    @Test(description = "Verify page title.")
     public void verifyPageTitle() {
         ApiListPage apiListPage = PageObjectFactory.getApiListPage(getDriver());
         assertion.assertEquals("Title", "Api Demos", apiListPage.getTitle());
@@ -52,7 +54,15 @@ public class ApiListTest extends BaseTest {
     @Screenshot
     @Test(dataProvider = "tabLabelProvider", dependsOnMethods = "verifyPageTitle")
     public void verifyApiList(String tabLabel) {
+        reportManager.setCurrentReportName(tabLabel);
         ApiListPage apiListPage = PageObjectFactory.getApiListPage(getDriver());
         assertion.assertEquals(tabLabel + " tab label", tabLabel, apiListPage.getTabLabel(tabLabel));
+    }
+
+    @Screenshot
+    @Test(description = "Verify scroll to top", dependsOnMethods = "verifyApiList")
+    public void scrollBackToTop() {
+        ApiListPage apiListPage = PageObjectFactory.getApiListPage(getDriver());
+        apiListPage.scrollToTop();
     }
 }

@@ -35,7 +35,7 @@ public interface ReportHelper {
         String methodName = method.getMethodName();
         String description = method.getDescription();
         // log.info("{} - {} - {} - {}", testName, className, methodName, description);
-        this.getReportManager().createMethodReport(methodName, description, className, testName);
+        this.getReportManager().createMethodReport(methodName, className, testName);
         this.getReportManager().info("Description: " + description);
         LoggerFactory.getLogger(className).info("Description: " + description);
     }

@@ -124,8 +124,8 @@ public final class SwiperUtil {
                 if (scrollTurn < DEFAULT_MAX_SCROLL_SEARCH) {
                     String beforeScrollingPageSource = DriverUtil.getPageSource(appiumDriver);
                     scrollByElementSizePercentage(appiumDriver, scrollableElement, direction, scrollPercentage);
-                    if (DriverUtil.getPageSource(appiumDriver).equals(
-                            beforeScrollingPageSource)) { // if the scrolling is not successful, skip
+                    // if the scrolling is not successful, skip
+                    if (DriverUtil.getPageSource(appiumDriver).equals(beforeScrollingPageSource)) {
                         break;
                     }
                     scrollTurn++;

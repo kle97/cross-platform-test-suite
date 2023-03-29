@@ -65,13 +65,12 @@ public abstract class BaseTest {
         String testName = result.getTestName();
         String methodName = testMethod.getMethodName();
         String description = testMethod.getDescription();
-        this.getReportManager().createMethodReport(methodName, description, className, testName);
+        this.getReportManager().createMethodReport(methodName, className, testName);
         if (!description.isBlank()) {
             this.getReportManager().info("Description: " + description);
             LoggerFactory.getLogger(className).info("Description: " + description);
         }
         
-
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
             String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
