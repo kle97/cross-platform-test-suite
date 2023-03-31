@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
+import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
@@ -57,7 +58,7 @@ public interface ScreenRecordingHelper {
         Dimension dimension = DriverUtil.getWindowSize(appiumDriver);
         int width = dimension.getWidth();
         int height = dimension.getHeight();
-        Path recordingPath = ScreenUtil.stopRecordingScreen(appiumDriver, recordingTitle);
+        Path recordingPath = ScreenUtil.stopRecordingScreen(appiumDriver, TestConst.SCREEN_RECORDING_DIRECTORY, recordingTitle);
         if (recordingPath != null) {
             String source = "file:///".concat(recordingPath.toAbsolutePath().toString());
             String attachment = "<video width='" + width + "' height='" + height + "' controls> " +

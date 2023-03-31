@@ -1,6 +1,5 @@
 package cross.platform.test.suite.utility;
 
-import cross.platform.test.suite.constant.TestConst;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.HidesKeyboard;
 import io.appium.java_client.functions.ExpectedCondition;
@@ -20,6 +19,8 @@ public final class DriverUtil {
 
     public static final int MAX_SEND_KEYS_RETRIES = 3; // times
     public static final int PAGE_SOURCE_MAX_RETRIES = 3; // times
+    public static final int DEFAULT_WAIT_INTERVAL = 1000; // ms
+    public static final String ELEMENT_NOT_FOUND = "ELEMENT_NOT_FOUND";
 
     // static method access only
     private DriverUtil() {
@@ -64,7 +65,7 @@ public final class DriverUtil {
      * @throws TimeoutException throws exception when timeout limit is reached.
      */
     public static WebElement waitForElement(AppiumDriver appiumDriver, WebElement element) throws TimeoutException {
-        return waitForElement(appiumDriver, element, TestConst.DEFAULT_WAIT_INTERVAL / 1000);
+        return waitForElement(appiumDriver, element, DEFAULT_WAIT_INTERVAL / 1000);
     }
 
     /**
@@ -92,7 +93,7 @@ public final class DriverUtil {
      */
     public static List<WebElement> waitForAllElements(AppiumDriver appiumDriver,
                                                       List<WebElement> elements) throws TimeoutException {
-        return waitForAllElements(appiumDriver, elements, TestConst.DEFAULT_WAIT_INTERVAL / 1000);
+        return waitForAllElements(appiumDriver, elements, DEFAULT_WAIT_INTERVAL / 1000);
     }
 
     /**
@@ -253,7 +254,7 @@ public final class DriverUtil {
             return element.getText();
         } catch (WebDriverException | NullPointerException ex) {
             log.debug(ex.getMessage());
-            return TestConst.ELEMENT_NOT_FOUND;
+            return ELEMENT_NOT_FOUND;
         }
     }
 

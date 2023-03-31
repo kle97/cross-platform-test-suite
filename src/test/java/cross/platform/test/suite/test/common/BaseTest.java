@@ -114,7 +114,7 @@ public abstract class BaseTest {
 
     @Test(enabled = false)
     protected void takeScreenshot(ExtentTest report, String screenshotTitle) {
-        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), screenshotTitle);
+        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), TestConst.SCREENSHOT_PATH, screenshotTitle);
         if (screenshotFile != null) {
             if (report != null) {
                 Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotFile.getAbsolutePath(), screenshotTitle).build();
@@ -141,11 +141,11 @@ public abstract class BaseTest {
         Dimension dimension = DriverUtil.getWindowSize(appiumDriver);
         int width = dimension.getWidth();
         int height = dimension.getHeight();
-        Path recordingPath = ScreenUtil.stopRecordingScreen(appiumDriver, recordingTitle);
+        Path recordingPath = ScreenUtil.stopRecordingScreen(appiumDriver, TestConst.SCREEN_RECORDING_DIRECTORY, recordingTitle);
         if (recordingPath != null) {
             String source = "file:///".concat(recordingPath.toAbsolutePath().toString());
             String attachment = "<video width='" + width + "' height='" + height + "' controls> " +
-                    "<source src='" + source + "' type='video/" + TestConst.DEFAULT_VIDEO_FORMAT + "'> " +
+                    "<source src='" + source + "' type='video/" + ScreenUtil.DEFAULT_VIDEO_FORMAT + "'> " +
                     "Your browser does not support the video tag.</video>";
             if (report != null) {
                 report.info(attachment);

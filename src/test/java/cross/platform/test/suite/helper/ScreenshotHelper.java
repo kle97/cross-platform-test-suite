@@ -6,6 +6,7 @@ import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
+import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.constant.When;
 import cross.platform.test.suite.utility.ScreenUtil;
 import org.testng.annotations.AfterMethod;
@@ -48,7 +49,7 @@ public interface ScreenshotHelper {
 
     @Test(enabled = false)
     default void takeScreenshot(ExtentTest report, String screenshotTitle) {
-        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), screenshotTitle);
+        File screenshotFile = ScreenUtil.saveScreenshot(getDriverManager().getDriver(), TestConst.SCREENSHOT_PATH, screenshotTitle);
         if (screenshotFile != null) {
             if (report != null) {
                 Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotFile.getAbsolutePath(), screenshotTitle).build();

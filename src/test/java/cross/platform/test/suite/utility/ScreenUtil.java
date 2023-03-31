@@ -1,6 +1,5 @@
 package cross.platform.test.suite.utility;
 
-import cross.platform.test.suite.constant.TestConst;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidStartScreenRecordingOptions;
@@ -21,15 +20,15 @@ import java.util.UUID;
 
 @Slf4j
 public final class ScreenUtil {
+    
+    public static final int DEFAULT_RECORDING_LIMIT_IN_SECONDS = 1800; // s
+    public static final int DEFAULT_RECORDING_DELAY = 200; // ms
+    public static final String DEFAULT_VIDEO_FORMAT = "mp4";
 
     private ScreenUtil() {
     }
 
-    public static File saveScreenshot(AppiumDriver appiumDriver, String title) {
-        return saveScreenshot(appiumDriver, title, TestConst.SCREENSHOT_PATH);
-    }
-
-    public static File saveScreenshot(AppiumDriver appiumDriver, String title, String directory) {
+    public static File saveScreenshot(AppiumDriver appiumDriver, String directory, String title) {
         File tempScreenshotFile = getScreenshotAsFile(appiumDriver);
         if (tempScreenshotFile != null) {
             File directoryFile = new File(directory);
@@ -82,7 +81,7 @@ public final class ScreenUtil {
     }
 
     public static void startRecordingScreen(AppiumDriver appiumDriver, int timeLimitInSeconds) {
-        timeLimitInSeconds = Math.min(timeLimitInSeconds, TestConst.DEFAULT_RECORDING_LIMIT_IN_SECONDS);
+        timeLimitInSeconds = Math.min(timeLimitInSeconds, DEFAULT_RECORDING_LIMIT_IN_SECONDS);
         if (appiumDriver instanceof AndroidDriver) {
             try {
                 AndroidStartScreenRecordingOptions options = new AndroidStartScreenRecordingOptions()
@@ -114,21 +113,20 @@ public final class ScreenUtil {
         return base64EncodedVideo;
     }
 
-    public static Path stopRecordingScreen(AppiumDriver appiumDriver, String recordingTitle) {
+    public static Path stopRecordingScreen(AppiumDriver appiumDriver, String recordingDirectory, String recordingTitle) {
         if (appiumDriver instanceof CanRecordScreen) {
             try {
-                File directoryFile = new File(TestConst.SCREEN_RECORDING_PATH);
+                File directoryFile = new File(recordingDirectory);
                 if (directoryFile.exists() || directoryFile.mkdirs()) {
                     try {
-                        Thread.sleep(TestConst.DEFAULT_RECORDING_DELAY);
+                        Thread.sleep(DEFAULT_RECORDING_DELAY);
                     } catch (InterruptedException e) {
                         log.debug(e.getMessage());
                     }
                     String base64EncodedVideo = ((CanRecordScreen) appiumDriver).stopRecordingScreen();
                     byte[] decodedVideo = Base64.getDecoder().decode(base64EncodedVideo);
                     String timestamp = String.valueOf(System.currentTimeMillis());
-                    String fileName = TestConst.SCREEN_RECORDING_PATH + recordingTitle + "-"
-                            + timestamp + "." + TestConst.DEFAULT_VIDEO_FORMAT;
+                    String fileName = recordingDirectory + recordingTitle + "-" + timestamp + "." + DEFAULT_VIDEO_FORMAT;
                     Path path = Paths.get(fileName);
                     return Files.write(path, decodedVideo);
                 }
