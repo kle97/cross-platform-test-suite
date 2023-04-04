@@ -9,9 +9,9 @@ import org.testng.annotations.Guice;
 
 import javax.inject.Inject;
 
-@Guice
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
+@Guice(modules = ApiDemosModule.class)
 public class ApiDemosSetupTest extends AbstractSetupTest {
     
     private final MobileConfig mobileConfig;

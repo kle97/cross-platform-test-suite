@@ -30,6 +30,10 @@ public abstract class BaseTest {
     public abstract ReportManager getReportManager();
     public abstract DriverManager getDriverManager();
 
+    protected AppiumDriver getDriver() {
+        return this.getDriverManager().getDriver();
+    }
+
     @BeforeClass
     protected void beforeClass(ITestContext context) {
         String className = this.getClass().getSimpleName();
