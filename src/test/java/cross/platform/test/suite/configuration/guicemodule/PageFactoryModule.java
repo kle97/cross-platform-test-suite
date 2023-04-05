@@ -4,8 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
 import cross.platform.test.suite.configuration.listener.GuiceInjectorListener;
-import cross.platform.test.suite.pageobject.ApiListGenericPage;
 import cross.platform.test.suite.pageobject.ApiListPage;
+import cross.platform.test.suite.pageobject.generic.ApiListGenericPage;
 import cross.platform.test.suite.properties.MobileConfig;
 import org.openqa.selenium.Platform;
 

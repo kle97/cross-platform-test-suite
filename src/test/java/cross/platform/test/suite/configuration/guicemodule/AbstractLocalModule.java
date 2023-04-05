@@ -1,6 +1,10 @@
 package cross.platform.test.suite.configuration.guicemodule;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import cross.platform.test.suite.configuration.manager.DriverManager;
+import cross.platform.test.suite.pageobject.factory.POFactory;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.utility.ConfigUtil;
 import cross.platform.test.suite.utility.JacksonUtil;
@@ -16,9 +20,19 @@ public abstract class AbstractLocalModule extends AbstractModule {
     
     @Override
     protected void configure() {
-        MobileConfig mobileConfig = this.readMobileConfigFromFile(getMobileConfigPath());
-        bind(MobileConfig.class).toInstance(mobileConfig);
-        install(new PageFactoryModule(mobileConfig));
+        
+    }
+
+    @Provides
+    @Singleton
+    public MobileConfig mobileConfig() {
+        return this.readMobileConfigFromFile(getMobileConfigPath());
+    }
+    
+    @Provides
+    @Singleton
+    public POFactory providePOFactory(DriverManager driverManager, MobileConfig mobileConfig) {
+        return new POFactory(driverManager, mobileConfig);
     }
 
     protected MobileConfig readMobileConfigFromFile(String filePath) {

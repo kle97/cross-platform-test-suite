@@ -6,6 +6,7 @@ import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.pageobject.ApiListPage;
+import cross.platform.test.suite.pageobject.factory.POFactory;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.test.common.BaseTest;
 import lombok.Getter;
@@ -30,8 +31,7 @@ public class ApiListTest extends BaseTest {
     private final DriverManager driverManager;
     private final ReportManager reportManager = new ReportManager();
     private final LoggingAssertion assertion = new LoggingAssertion(reportManager, log);
-    
-    private final ApiListPage apiListPage;
+    private final POFactory factory;
     
     @DataProvider(name = "tabLabelProvider")
     public Iterator<Object[]> tabLabelProvider() {
@@ -43,20 +43,19 @@ public class ApiListTest extends BaseTest {
     @Screenshot
     @Test(description = "Verify page title.")
     public void verifyPageTitle() {
-        apiListPage.init();
-        assertion.assertEquals("Title", "Api Demos", apiListPage.getTitle());
+        assertion.assertEquals("Title", "Api Demos", factory.get(ApiListPage.class).getTitle());
     }
     
     @Screenshot
     @Test(dataProvider = "tabLabelProvider", dependsOnMethods = "verifyPageTitle")
     public void verifyApiList(String tabLabel) {
         reportManager.setCurrentReportName(tabLabel);
-        assertion.assertEquals(tabLabel + " tab label", tabLabel, apiListPage.getTabLabel(tabLabel));
+        assertion.assertEquals(tabLabel + " tab label", tabLabel, factory.get(ApiListPage.class).getTabLabel(tabLabel));
     }
 
     @Screenshot
     @Test(description = "Verify scroll to top", dependsOnMethods = "verifyApiList")
     public void scrollBackToTop() {
-        apiListPage.scrollToTop();
+        factory.get(ApiListPage.class).scrollToTop();
     }
 }

@@ -1,31 +1,19 @@
 package cross.platform.test.suite.pageobject;
 
-import cross.platform.test.suite.configuration.manager.DriverManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.support.PageFactory;
 
-public abstract class AbstractPage {
+public abstract class AbstractPage implements Page {
     
-    private final DriverManager driverManager;
-    private AppiumDriver appiumDriver;
+    private final AppiumDriver appiumDriver;
     
-    public AbstractPage(DriverManager driverManager) {
-        this.driverManager = driverManager;
-    }
-    
-    public void init() {
-        PageFactory.initElements(new AppiumFieldDecorator(getDriver()), this);
-    }
-
-    public void back() {
-        this.appiumDriver.navigate().back();
+    public AbstractPage(AppiumDriver appiumDriver) {
+        this.appiumDriver = appiumDriver;
+        PageFactory.initElements(new AppiumFieldDecorator(appiumDriver), this);
     }
     
     protected AppiumDriver getDriver() {
-        if (this.appiumDriver == null) {
-            this.appiumDriver = driverManager.getDriver();
-        }
         return this.appiumDriver;
     }
 }

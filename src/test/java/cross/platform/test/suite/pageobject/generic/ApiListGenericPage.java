@@ -1,15 +1,16 @@
-package cross.platform.test.suite.pageobject;
+package cross.platform.test.suite.pageobject.generic;
 
-import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.constant.Direction;
+import cross.platform.test.suite.pageobject.AbstractPage;
+import cross.platform.test.suite.pageobject.ApiListPage;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.SwiperUtil;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidBy;
 import io.appium.java_client.pagefactory.AndroidFindAll;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
 
-import javax.inject.Inject;
 import java.util.List;
 
 public class ApiListGenericPage extends AbstractPage implements ApiListPage {
@@ -24,9 +25,8 @@ public class ApiListGenericPage extends AbstractPage implements ApiListPage {
     @AndroidFindAll(@AndroidBy(id = "android:id/text1"))
     private List<WebElement> apiList;
     
-    @Inject
-    public ApiListGenericPage(DriverManager driverManager) {
-        super(driverManager);
+    public ApiListGenericPage(AppiumDriver appiumDriver) {
+        super(appiumDriver);
     }
     
     @Override
