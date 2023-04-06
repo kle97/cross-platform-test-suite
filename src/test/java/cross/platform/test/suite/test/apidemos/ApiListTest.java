@@ -6,7 +6,8 @@ import cross.platform.test.suite.assertion.LoggingAssertion;
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.pageobject.ApiListPage;
-import cross.platform.test.suite.pageobject.factory.POFactory;
+import cross.platform.test.suite.pageobject.AppPage;
+import cross.platform.test.suite.pageobject.factory.POMFactory;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.test.common.BaseTest;
 import lombok.Getter;
@@ -29,9 +30,9 @@ public class ApiListTest extends BaseTest {
 
     private final MobileConfig mobileConfig;
     private final DriverManager driverManager;
+    private final POMFactory pomFactory;
     private final ReportManager reportManager = new ReportManager();
     private final LoggingAssertion assertion = new LoggingAssertion(reportManager, log);
-    private final POFactory factory;
     
     @DataProvider(name = "tabLabelProvider")
     public Iterator<Object[]> tabLabelProvider() {
@@ -40,22 +41,51 @@ public class ApiListTest extends BaseTest {
         return tabLabelList.stream().map(tab -> new Object[] {tab}).iterator();
     }
 
+    @DataProvider(name = "appLabelProvider")
+    public Iterator<Object[]> appLabelProvider() {
+        List<String> appLabelList = List.of("Action Bar", "Activity", "Alarm", "Alert Dialogs", "Device Admin",
+                                            "Fragment", "Launcher Shortcuts", "Loader", "Menu", "Notification", "Search", 
+                                            "Service", "Text-To-Speech", "Voice Recognition");
+        return appLabelList.stream().map(tab -> new Object[] {tab}).iterator();
+    }
+
     @Screenshot
     @Test(description = "Verify page title.")
     public void verifyPageTitle() {
-        assertion.assertEquals("Title", "Api Demos", factory.get(ApiListPage.class).getTitle());
+        assertion.assertEquals("Title", "Api Demos", pomFactory.get(ApiListPage.class).getTitle());
     }
     
     @Screenshot
     @Test(dataProvider = "tabLabelProvider", dependsOnMethods = "verifyPageTitle")
     public void verifyApiList(String tabLabel) {
         reportManager.setCurrentReportName(tabLabel);
-        assertion.assertEquals(tabLabel + " tab label", tabLabel, factory.get(ApiListPage.class).getTabLabel(tabLabel));
+        assertion.assertEquals(tabLabel + " tab label", tabLabel, pomFactory.get(ApiListPage.class).getTabLabel(tabLabel));
     }
 
     @Screenshot
     @Test(description = "Verify scroll to top", dependsOnMethods = "verifyApiList")
     public void scrollBackToTop() {
-        factory.get(ApiListPage.class).scrollToTop();
+        pomFactory.get(ApiListPage.class).scrollToTop();
+    }
+
+    @Screenshot
+    @Test(description = "Verify App page title.", dependsOnMethods = "scrollBackToTop")
+    public void verifyCheckoutAppPage() {
+        AppPage appPage = pomFactory.get(ApiListPage.class).goToApp();
+        assertion.assertEquals("Title", "API Demos", appPage.getTitle());
+    }
+
+    @Screenshot
+    @Test(dataProvider = "appLabelProvider", dependsOnMethods = "verifyCheckoutAppPage")
+    public void verifyAppList(String appLabel) {
+        reportManager.setCurrentReportName(appLabel);
+        assertion.assertEquals(appLabel + " app label", appLabel, pomFactory.get(AppPage.class).getAppLabel(appLabel));
+    }
+
+    @Screenshot
+    @Test(description = "Verify going back to Api list", dependsOnMethods = "verifyAppList")
+    public void backToApiList() {
+        ApiListPage apiListPage = pomFactory.get(AppPage.class).back();
+        assertion.assertEquals("Title", "API Demos", pomFactory.get(ApiListPage.class).getTitle());
     }
 }

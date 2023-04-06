@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.pageobject.factory.POFactory;
+import cross.platform.test.suite.pageobject.factory.POMFactory;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.utility.ConfigUtil;
 import cross.platform.test.suite.utility.JacksonUtil;
@@ -31,8 +31,8 @@ public abstract class AbstractLocalModule extends AbstractModule {
     
     @Provides
     @Singleton
-    public POFactory providePOFactory(DriverManager driverManager, MobileConfig mobileConfig) {
-        return new POFactory(driverManager, mobileConfig);
+    public POMFactory providePOFactory(DriverManager driverManager, MobileConfig mobileConfig) {
+        return new POMFactory(driverManager, mobileConfig);
     }
 
     protected MobileConfig readMobileConfigFromFile(String filePath) {

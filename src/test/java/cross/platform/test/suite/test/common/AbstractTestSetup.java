@@ -17,7 +17,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-public abstract class AbstractSetupTest {
+public abstract class AbstractTestSetup {
 
     protected AppiumService appiumService;
     

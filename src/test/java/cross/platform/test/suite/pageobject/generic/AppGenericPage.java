@@ -15,29 +15,29 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ApiListGenericPage extends AbstractPage implements ApiListPage {
-    
+public class AppGenericPage extends AbstractPage implements AppPage {
+
     @AndroidFindBy(xpath = "//*[@resource-id='android:id/action_bar']/android.widget.TextView")
     private WebElement title;
-    
+
     @AndroidFindBy(id = "android:id/list")
     private WebElement apiListContainer;
 
     @AndroidFindBy(id = "android:id/list")
     @AndroidFindAll(@AndroidBy(id = "android:id/text1"))
     private List<WebElement> apiList;
-    
-    public ApiListGenericPage(AppiumDriver appiumDriver, POMFactory pomFactory) {
+
+    public AppGenericPage(AppiumDriver appiumDriver, POMFactory pomFactory) {
         super(appiumDriver, pomFactory);
     }
-    
+
     @Override
     public String getTitle() {
         return DriverUtil.getText(this.title);
     }
-    
+
     @Override
-    public String getTabLabel(String label) {
+    public String getAppLabel(String label) {
         WebElement element = SwiperUtil.findElementInScrollableContainerWithText(driver(), apiListContainer, apiList, label, Direction.DOWN);
         return DriverUtil.getText(element);
     }
@@ -47,7 +47,7 @@ public class ApiListGenericPage extends AbstractPage implements ApiListPage {
         WebElement element = SwiperUtil.findElementInScrollableContainerWithText(driver(), apiListContainer, apiList, label, Direction.DOWN);
         element.click();
     }
-    
+
     @Override
     public void scrollToTop() {
         for (int i = 0; i < SwiperUtil.DEFAULT_MAX_SCROLL_SEARCH; i++) {
@@ -60,8 +60,8 @@ public class ApiListGenericPage extends AbstractPage implements ApiListPage {
     }
 
     @Override
-    public AppPage goToApp() {
-        this.clickTab("App");
-        return pomFactory().get(AppPage.class);
+    public ApiListPage back() {
+        driver().navigate().back();
+        return pomFactory().get(ApiListPage.class);
     }
 }

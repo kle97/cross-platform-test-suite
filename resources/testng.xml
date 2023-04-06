@@ -6,7 +6,7 @@
     
         <test name="ApiDemos">
             <classes>
-                <class name="cross.platform.test.suite.test.apidemos.ApiDemosSetupTest"/>                
+                <class name="cross.platform.test.suite.test.apidemos.ApiDemosSetup"/>                
                 <class name="cross.platform.test.suite.test.apidemos.ApiListTest"/>
             </classes>
         </test>
