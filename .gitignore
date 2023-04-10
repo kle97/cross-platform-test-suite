@@ -7,11 +7,6 @@ bin/
 out/
 test-output/
 
-
-### miscellaneous ###
-.env
-/reports
-
 ### General ###
 HELP.md
 target/
@@ -40,3 +35,8 @@ target/
 
 ### VS Code ###
 .vscode/
+
+### miscellaneous ###
+app/
+.env
+/reports/

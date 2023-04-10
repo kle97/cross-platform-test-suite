@@ -6,6 +6,7 @@ import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
+import cross.platform.test.suite.utility.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
@@ -32,10 +33,6 @@ public abstract class AbstractTestSetup {
         return this.appiumService;
     }
     
-    private boolean isParallel() {
-        return Boolean.parseBoolean(System.getProperty("parallel"));
-    }
-    
     @BeforeSuite(alwaysRun = true)
     protected void beforeSuite() {
         String timeStamp = DateTimeFormatter.ofPattern("MM-dd-yyyy-HH-mm-ss")
@@ -47,7 +44,7 @@ public abstract class AbstractTestSetup {
         spark.config().setCss(".col-md-3 > img { max-width: 180px; max-height: 260px; } .col-md-3 > .title { max-width: 180px; }");
         ReportManager.attachReporter(spark);
 
-        if (!isParallel()) {
+        if (!ConfigUtil.isParallel()) {
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(getAppiumService()::stopServer));
                 getAppiumService().startServer();
@@ -59,7 +56,7 @@ public abstract class AbstractTestSetup {
 
     @AfterSuite(alwaysRun = true)
     protected void afterSuite() {
-        if (!isParallel()) {
+        if (!ConfigUtil.isParallel()) {
             getAppiumService().stopSession();
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 getAppiumService().stopServer();
@@ -83,7 +80,7 @@ public abstract class AbstractTestSetup {
 
     @BeforeTest(alwaysRun = true)
     protected void beforeTest() {
-        if (isParallel()) {
+        if (ConfigUtil.isParallel()) {
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 getAppiumService().startServer();
             }
@@ -94,7 +91,7 @@ public abstract class AbstractTestSetup {
 
     @AfterTest(alwaysRun = true)
     protected void afterTest() {
-        if (isParallel()) {
+        if (ConfigUtil.isParallel()) {
             getAppiumService().stopSession();
             if (!this.getMobileConfig().getServerArguments().isHub()) {
                 getAppiumService().stopServer();

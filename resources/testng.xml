@@ -4,10 +4,10 @@
        guice-stage="PRODUCTION"
        parent-module="cross.platform.test.suite.configuration.guicemodule.ParentModule">
     
-        <test name="ApiDemos">
-            <classes>
-                <class name="cross.platform.test.suite.test.apidemos.ApiDemosSetup"/>                
-                <class name="cross.platform.test.suite.test.apidemos.ApiListTest"/>
+        <test name="ApiDemos" >
+            <classes >
+                <class name="cross.platform.test.suite.test.catalog.CatalogSetup"/>                
+                <class name="cross.platform.test.suite.test.catalog.CatalogTest"/>
             </classes>
         </test>
 </suite>

@@ -11,19 +11,19 @@ import java.util.Map;
 @Slf4j
 public abstract class JsonBaseConfig {
     
-    protected Map<String, Object> otherArguments = new HashMap<>();
+    protected Map<String, Object> unrecognizedFields = new HashMap<>();
     
     @JsonAnySetter
-    protected void setOtherArguments(String argument, Object value) {
-        this.otherArguments.put(argument, value);
+    protected void addUnrecognizedField(String argument, Object value) {
+        this.unrecognizedFields.put(argument, value);
     }
     
     public boolean hasConfig(String argument) {
-        return this.otherArguments.containsKey(argument);
+        return this.unrecognizedFields.containsKey(argument);
     }
 
     public Object getAsObject(String argument) {
-        return this.otherArguments.get(argument);
+        return this.unrecognizedFields.get(argument);
     }
 
     public String getAsString(String argument) {

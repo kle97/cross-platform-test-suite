@@ -1,12 +1,10 @@
 package cross.platform.test.suite.test.apidemos;
 
-import cross.platform.test.suite.configuration.guicemodule.AbstractLocalModule;
-import cross.platform.test.suite.constant.TestConst;
+import com.google.inject.AbstractModule;
 
-public class ApiDemosModule extends AbstractLocalModule {
+public class ApiDemosModule extends AbstractModule {
     
     @Override
-    public String getMobileConfigPath() {
-        return TestConst.ANDROID_1_CONFIG_PATH;
+    protected void configure() {
     }
 }

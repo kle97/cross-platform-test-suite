@@ -1,0 +1,45 @@
+{
+    "android1": {
+        "server": {
+            "address": "x.x.x.x",
+            "port": 4444,
+            "isHub": true,
+            // extra config for local Appium server run
+            "basePath": "/wd/hub",
+            "logLevel": "warn",
+            "allowInsecure": "adb_shell",
+        },
+        "capabilities": {
+            "platformName": "Android",
+            "appium:platformVersion": "8.1.0",
+            "appium:automationName": "UiAutomator2",
+            "appium:newCommandTimeout": 600,
+            "appium:appPackage": "com.saucelabs.mydemoapp.rn",
+            "appium:appActivity": "com.saucelabs.mydemoapp.rn.MainActivity",
+            "appium:noReset": true,
+            "appium:dontStopAppOnReset": true,
+        },
+    },
+    
+    "android2": {
+        "server": {
+            "address": "x.x.x.x",
+            "port": 4444,
+            "isHub": true,
+            // extra config for local Appium server run
+            "basePath": "/wd/hub",
+            "logLevel": "warn",
+            "allowInsecure": "adb_shell",
+        },
+        "capabilities": {
+            "platformName": "Android",
+            "appium:platformVersion": "8.1.0",
+            "appium:automationName": "UiAutomator2",
+            "appium:newCommandTimeout": 600,
+            "appium:appPackage": "com.saucelabs.mydemoapp.rn",
+            "appium:appActivity": "com.saucelabs.mydemoapp.rn.MainActivity",
+            "appium:noReset": true,
+            "appium:dontStopAppOnReset": true,
+        },
+    }
+}

@@ -13,6 +13,19 @@ public final class ConfigUtil {
     
     private ConfigUtil() {
     }
+
+    public static boolean isParallel() {
+        return Boolean.parseBoolean(System.getProperty("parallel", "false"));
+    }
+    
+    public static <T> T readJsonFileAs(Class<T> clazz, String filePath) {
+        try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
+            return JacksonUtil.getDefaultObjectReader().readValue(inputStream, clazz);
+        } catch (IOException ex) {
+            log.debug(ex.getMessage());
+            return null;
+        }
+    }
     
     public static Properties readJsonFileAsProperties(String filePath, boolean allowSystemPropsOverride) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
