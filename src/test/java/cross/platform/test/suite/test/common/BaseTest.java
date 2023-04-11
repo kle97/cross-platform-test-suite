@@ -3,6 +3,7 @@ package cross.platform.test.suite.test.common;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
+import cross.platform.test.suite.annotation.DisableAutoReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.configuration.manager.DriverManager;
@@ -26,7 +27,7 @@ import java.nio.file.Path;
 
 @Slf4j
 public abstract class BaseTest {
-    
+
     public abstract ReportManager getReportManager();
     public abstract DriverManager getDriverManager();
 
@@ -48,7 +49,7 @@ public abstract class BaseTest {
             this.startRecordingScreen(screenRecordAnnotation.timeLimit());
         }
     }
-    
+
     @AfterClass
     protected void afterClass() {
         ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
@@ -69,12 +70,16 @@ public abstract class BaseTest {
         String testName = result.getTestName();
         String methodName = testMethod.getMethodName();
         String description = testMethod.getDescription();
-        this.getReportManager().createMethodReport(methodName, className, testName);
+        DisableAutoReport disableAutoReportAnnotation = method.getDeclaredAnnotation(DisableAutoReport.class);
+        if (disableAutoReportAnnotation == null) {
+            this.getReportManager().createMethodReport(methodName, className, testName);
+        }
+
         if (!description.isBlank()) {
             this.getReportManager().info("Description: " + description);
             LoggerFactory.getLogger(className).info("Description: " + description);
         }
-        
+
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
             String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
@@ -107,7 +112,7 @@ public abstract class BaseTest {
                 } else {
                     ScreenUtil.stopRecordingScreen(getDriverManager().getDriver());
                 }
-            } 
+            }
         }
     }
 

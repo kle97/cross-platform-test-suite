@@ -5,6 +5,7 @@ import lombok.Value;
 @Value
 public class TestConfig {
     
-    String mobileConfig;
-    String userConfig;
+    MobileConfig mobileConfig;
+    
+    UserInfo userInfo;
 }

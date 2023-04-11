@@ -3,11 +3,15 @@
 <suite name="defaultSuite" verbose="1"
        guice-stage="PRODUCTION"
        parent-module="cross.platform.test.suite.configuration.guicemodule.ParentModule">
-    
-        <test name="ApiDemos" >
-            <classes >
-                <class name="cross.platform.test.suite.test.catalog.CatalogSetup"/>                
-                <class name="cross.platform.test.suite.test.catalog.CatalogTest"/>
-            </classes>
-        </test>
+
+    <listeners>
+        <listener class-name="cross.platform.test.suite.configuration.listener.TestNGListener" />
+    </listeners>
+
+    <test name="Catalog" >
+        <classes >
+            <class name="cross.platform.test.suite.test.catalog.CatalogSetup"/>
+            <class name="cross.platform.test.suite.test.catalog.CatalogTest"/>
+        </classes>
+    </test>
 </suite>

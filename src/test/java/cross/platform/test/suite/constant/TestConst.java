@@ -2,9 +2,10 @@ package cross.platform.test.suite.constant;
 
 public final class TestConst {
     public static final String MOBILE_CONFIG_MAP_PATH = "properties/MobileConfigMap.json5";
-    public static final String USER_CONFIG_MAP_PATH = "properties/UserConfigMap.json5";
-    public static final String DEFAULT_TEST_CONFIG_PATH = "properties/TestConfig1.json5";
-    public static final String TEST_CONFIG_1_PATH = "properties/TestConfig1.json5";
+    public static final String USER_INFO_MAP_PATH = "properties/UserInfoMap.json5";
+    
+    public static final String DEFAULT_TEST_CONFIG_MAP_PATH = "properties/TestConfigMap1.json5";
+    public static final String TEST_CONFIG_MAP_1_PATH = "properties/TestConfigMap1.json5";
     
     public static final String REPORT_PATH = "reports/spark/";
     public static final String SCREENSHOT_PATH = "reports/screenshot/";

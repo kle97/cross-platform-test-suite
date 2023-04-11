@@ -2,12 +2,12 @@ package cross.platform.test.suite.pageobject.factory;
 
 import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.pageobject.AbstractPage;
-import cross.platform.test.suite.pageobject.ApiListPage;
-import cross.platform.test.suite.pageobject.AppPage;
+import cross.platform.test.suite.pageobject.CatalogPage;
 import cross.platform.test.suite.pageobject.Page;
-import cross.platform.test.suite.pageobject.generic.ApiListGenericPage;
-import cross.platform.test.suite.pageobject.generic.AppGenericPage;
-import cross.platform.test.suite.properties.MobileConfig;
+import cross.platform.test.suite.pageobject.SideNavigationPage;
+import cross.platform.test.suite.pageobject.generic.CatalogGenericPage;
+import cross.platform.test.suite.pageobject.generic.SideNavigationGenericPage;
+import cross.platform.test.suite.properties.TestConfig;
 import io.appium.java_client.AppiumDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Platform;
@@ -19,26 +19,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class POMFactory {
-    
+
     private static final Map<Class<? extends Page>, Class<? extends AbstractPage>> iOSPageMap = new ConcurrentHashMap<>();
     private static final Map<Class<? extends Page>, Class<? extends AbstractPage>> androidPageMap = new ConcurrentHashMap<>();
     private static final Map<Class<? extends Page>, Class<? extends AbstractPage>> genericPageMap = new ConcurrentHashMap<>();
     static {
-        genericPageMap.put(ApiListPage.class, ApiListGenericPage.class);
-        genericPageMap.put(AppPage.class, AppGenericPage.class);
+        genericPageMap.put(SideNavigationPage.class, SideNavigationGenericPage.class);
+        genericPageMap.put(CatalogPage.class, CatalogGenericPage.class);
     }
-    
+
     private final DriverManager driverManager;
-    private final MobileConfig mobileConfig;
+    private final TestConfig testConfig;
     private final Map<Class<? extends Page>, ? super Page> pageInstanceMap = new HashMap<>();
     private final Platform currentPlatform;
-    
-    public POMFactory(DriverManager driverManager, MobileConfig mobileConfig) {
+
+    public POMFactory(DriverManager driverManager, TestConfig testConfig) {
         this.driverManager = driverManager;
-        this.mobileConfig = mobileConfig;
-        this.currentPlatform = mobileConfig.getDesiredCapabilities().getPlatformName();
+        this.testConfig = testConfig;
+        this.currentPlatform = testConfig.getMobileConfig().getDesiredCapabilities().getPlatformName();
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T extends Page> T get(Class<T> clazz) {
         if (pageInstanceMap.containsKey(clazz)) {
@@ -60,7 +60,7 @@ public class POMFactory {
         } else if (this.currentPlatform.is(Platform.IOS)) {
             implementationClass = iOSPageMap.get(clazz);
         }
-        
+
         if (implementationClass == null) {
             implementationClass = genericPageMap.get(clazz);
         }

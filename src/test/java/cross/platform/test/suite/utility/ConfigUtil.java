@@ -10,6 +10,11 @@ import java.util.Properties;
 
 @Slf4j
 public final class ConfigUtil {
+
+    private static final JavaPropsSchema propsSchema = JavaPropsSchema.emptySchema()
+                                                                      .withWriteIndexUsingMarkers(true)
+                                                                      .withFirstArrayOffset(0)
+                                                                      .withIndexMarker(Markers.create("[", "]"));
     
     private ConfigUtil() {
     }
@@ -30,10 +35,6 @@ public final class ConfigUtil {
     public static Properties readJsonFileAsProperties(String filePath, boolean allowSystemPropsOverride) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
             Object config = JacksonUtil.getDefaultObjectReader().readValue(inputStream, Object.class);
-            JavaPropsSchema propsSchema = JavaPropsSchema.emptySchema()
-                                                         .withWriteIndexUsingMarkers(true)
-                                                         .withFirstArrayOffset(0)
-                                                         .withIndexMarker(Markers.create("[", "]"));
             Properties configAsProperties = JacksonUtil.getDefaultJavaPropsMapper().writeValueAsProperties(config, propsSchema);
             if (allowSystemPropsOverride) {
                 for (String systemPropertiesKey: System.getProperties().stringPropertyNames()) {

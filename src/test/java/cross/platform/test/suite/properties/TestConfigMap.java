@@ -3,8 +3,8 @@ package cross.platform.test.suite.properties;
 import lombok.Value;
 
 @Value
-public class UserConfig {
+public class TestConfigMap {
     
-    String username;
-    String password;
+    String mobileConfig;
+    String userInfo;
 }

@@ -10,7 +10,7 @@ public class CatalogModule extends AbstractModule {
     @Override
     protected void configure() {
         if (ConfigUtil.isParallel()) {
-            install(new ConfigModule(TestConst.TEST_CONFIG_1_PATH));
+            install(new ConfigModule(TestConst.TEST_CONFIG_MAP_1_PATH));
         }
         
         
