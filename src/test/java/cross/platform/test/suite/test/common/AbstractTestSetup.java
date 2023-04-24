@@ -2,35 +2,34 @@ package cross.platform.test.suite.test.common;
 
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import cross.platform.test.suite.assertion.LoggingAssertion;
-import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
-import cross.platform.test.suite.properties.MobileConfig;
+import cross.platform.test.suite.properties.TestConfig;
 import cross.platform.test.suite.utility.ConfigUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
+@Getter
 public abstract class AbstractTestSetup {
 
-    protected AppiumService appiumService;
+    @Inject
+    private TestConfig testConfig;
     
-    protected abstract MobileConfig getMobileConfig();
-
-    protected abstract DriverManager getDriverManager();
-
-    protected AppiumService getAppiumService() {
-        if (this.appiumService == null) {
-            this.appiumService = new AppiumService(getMobileConfig(), getDriverManager());
-        }
-        return this.appiumService;
+    @Inject
+    private AppiumService appiumService;
+    
+    protected boolean isHub() {
+        return this.getTestConfig().getMobileConfig().getServerArguments().isHub();
     }
     
     @BeforeSuite(alwaysRun = true)
@@ -45,11 +44,10 @@ public abstract class AbstractTestSetup {
         ReportManager.attachReporter(spark);
 
         if (!ConfigUtil.isParallel()) {
-            if (!this.getMobileConfig().getServerArguments().isHub()) {
+            if (!this.isHub()) {
                 Runtime.getRuntime().addShutdownHook(new Thread(getAppiumService()::stopServer));
                 getAppiumService().startServer();
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(getAppiumService()::cleanUpSessionHook));
             getAppiumService().startSession();
         }
     }
@@ -58,7 +56,7 @@ public abstract class AbstractTestSetup {
     protected void afterSuite() {
         if (!ConfigUtil.isParallel()) {
             getAppiumService().stopSession();
-            if (!this.getMobileConfig().getServerArguments().isHub()) {
+            if (!this.isHub()) {
                 getAppiumService().stopServer();
             }
         }
@@ -81,10 +79,9 @@ public abstract class AbstractTestSetup {
     @BeforeTest(alwaysRun = true)
     protected void beforeTest() {
         if (ConfigUtil.isParallel()) {
-            if (!this.getMobileConfig().getServerArguments().isHub()) {
+            if (!this.isHub()) {
                 getAppiumService().startServer();
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(getAppiumService()::cleanUpSessionHook));
             getAppiumService().startSession();
         }
     }
@@ -93,7 +90,7 @@ public abstract class AbstractTestSetup {
     protected void afterTest() {
         if (ConfigUtil.isParallel()) {
             getAppiumService().stopSession();
-            if (!this.getMobileConfig().getServerArguments().isHub()) {
+            if (!this.isHub()) {
                 getAppiumService().stopServer();
             }
         }

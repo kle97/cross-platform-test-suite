@@ -1,10 +1,8 @@
 package cross.platform.test.suite.utility;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 
@@ -53,11 +51,27 @@ public final class JacksonUtil {
         return objectMapper.reader().forType(type);
     }
 
+    public static ObjectReader getObjectReader(TypeReference<?> typeReference) {
+        return objectMapper.reader().forType(typeReference);
+    }
+
+    public static ObjectReader getObjectReader(JavaType type) {
+        return objectMapper.reader().forType(type);
+    }
+
     public static ObjectWriter getObjectWriter() {
         return objectMapper.writer();
     }
 
     public static ObjectWriter getObjectWriter(Class<?> type) {
+        return objectMapper.writer().forType(type);
+    }
+
+    public static ObjectWriter getObjectWriter(TypeReference<?> typeReference) {
+        return objectMapper.writer().forType(typeReference);
+    }
+
+    public static ObjectWriter getObjectWriter(JavaType type) {
         return objectMapper.writer().forType(type);
     }
 }

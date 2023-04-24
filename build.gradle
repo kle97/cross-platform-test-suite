@@ -19,7 +19,7 @@ repositories {
 dependencies {
     testImplementation(
             // Use TestNG framework, also requires calling test.useTestNG() below
-            "org.testng:testng:7.5",
+            'org.testng:testng:7.7.0',
 
             // Guice dependency injection framework
             "com.google.inject:guice:5.1.0",
@@ -99,7 +99,6 @@ test {
 
     // Use TestNG for unit tests.
     useTestNG() {
-//        listeners << "cross.platform.test.suite.configuration.listener.TestNGAlterListener"
         suites "resources/testng.xml"
         if (parallelEnabled == "true") {
             parallel = "tests"

@@ -4,7 +4,6 @@ import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.properties.ServerArguments;
-import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
@@ -13,24 +12,27 @@ import io.appium.java_client.service.local.AppiumServerHasNotBeenStartedLocallyE
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.core.util.Throwables;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.*;
 
 @Slf4j
 public class AppiumService {
 
-    private AppiumDriverLocalService appiumDriverLocalService;
     private final MobileConfig mobileConfig;
     private final DriverManager driverManager;
+    private AppiumDriver appiumDriver;
 
-    public AppiumService(MobileConfig mobileConfig, DriverManager driverManager) {
-        this.mobileConfig = mobileConfig;
+    private AppiumDriverLocalService appiumDriverLocalService;
+    
+    @Inject
+    public AppiumService(DriverManager driverManager, MobileConfig mobileConfig) {
         this.driverManager = driverManager;
+        this.mobileConfig = mobileConfig;
     }
 
     public void startSession() {
@@ -49,20 +51,20 @@ public class AppiumService {
                 URL remoteAddress = new URL(serverURL);
                 if (platform.is(Platform.ANDROID)) {
                     UiAutomator2Options uiAutomator2Options = new UiAutomator2Options(desiredCapabilities);
-                    AppiumDriver appiumDriver = new AndroidDriver(remoteAddress, uiAutomator2Options);
+                    Runtime.getRuntime().addShutdownHook(new Thread(this::cleanUpSessionHook));
+                    appiumDriver = new AndroidDriver(remoteAddress, uiAutomator2Options);
                     driverManager.setDriver(appiumDriver);
                     log.info("Driver session created with id {}!", appiumDriver.getSessionId());
                 }
-                return;
+                break;
             } catch (WebDriverException ex) {
-                if (ex.getCause() != null) {
-                    Throwable rootCause = Throwables.getRootCause(ex.getCause());
-                    log.info(rootCause.getMessage());
-                } else {
-                    log.info(ex.getMessage());
-                }
+                log.error("WebDriverException: ", ex);
             } catch (MalformedURLException ex) {
-                log.info(ex.getMessage());
+                log.error("MalformedURLException: ", ex);
+            } finally {
+                if (i < TestConst.APPIUM_SESSION_START_RETRIES - 1) {
+                     log.debug("Retrying to start driver session!");
+                }
             }
         }
     }
@@ -78,10 +80,8 @@ public class AppiumService {
     }
 
     public void cleanUpSessionHook() {
-        if (this.driverManager.hasDriver()) {
-            ScreenUtil.stopRecordingScreen(this.driverManager.getDriver());
-        }
-        this.stopSession();
+        log.info("Shutdown hook: quitting Appium driver!");
+        appiumDriver.quit();
     }
 
     public AppiumDriverLocalService startServer() {

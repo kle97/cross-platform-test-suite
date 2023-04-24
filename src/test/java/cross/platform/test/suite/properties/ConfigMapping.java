@@ -3,7 +3,7 @@ package cross.platform.test.suite.properties;
 import lombok.Value;
 
 @Value
-public class TestConfigMap {
+public class ConfigMapping {
     
     String mobileConfig;
     String userInfo;

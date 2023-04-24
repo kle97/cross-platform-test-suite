@@ -12,6 +12,7 @@ import io.appium.java_client.AppiumDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Platform;
 
+import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,8 @@ public class POMFactory {
     private final TestConfig testConfig;
     private final Map<Class<? extends Page>, ? super Page> pageInstanceMap = new HashMap<>();
     private final Platform currentPlatform;
-
+    
+    @Inject
     public POMFactory(DriverManager driverManager, TestConfig testConfig) {
         this.driverManager = driverManager;
         this.testConfig = testConfig;
