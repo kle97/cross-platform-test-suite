@@ -4,10 +4,10 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.annotation.Screenshot;
-import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.constant.When;
+import cross.platform.test.suite.service.DriverManager;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.ScreenUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 public interface ScreenshotHelper {
 
     DriverManager getDriverManager();
-    ReportManager getReportManager();
+    Reporter getReportManager();
 
     @BeforeMethod
     default void screenshotHelperBeforeMethod(Method method) {

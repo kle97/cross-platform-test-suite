@@ -1,10 +1,11 @@
 package cross.platform.test.suite.test.common;
 
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import cross.platform.test.suite.assertion.LoggingAssertion;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.TestConfig;
+import cross.platform.test.suite.service.AppiumService;
+import cross.platform.test.suite.service.LoggingAssertion;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.ConfigUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public abstract class AbstractTestSetup {
         String reportFilePath = TestConst.REPORT_PATH + filePath;
         ExtentSparkReporter spark = new ExtentSparkReporter(reportFilePath);
         spark.config().setCss(".col-md-3 > img { max-width: 180px; max-height: 260px; } .col-md-3 > .title { max-width: 180px; }");
-        ReportManager.attachReporter(spark);
+        Reporter.attachReporter(spark);
 
         if (!ConfigUtil.isParallel()) {
             if (!this.isHub()) {
@@ -62,9 +63,9 @@ public abstract class AbstractTestSetup {
         }
 
         log.info("Writing extent report output to reporters...");
-        ReportManager.flush();
+        Reporter.flush();
 
-        for (String reporterFilePath: ReportManager.getReporterFilePaths()) {
+        for (String reporterFilePath: Reporter.getReporterFilePaths()) {
             System.out.println("Generated report file at: " + reporterFilePath);
         }
 

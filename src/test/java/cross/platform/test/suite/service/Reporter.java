@@ -1,4 +1,4 @@
-package cross.platform.test.suite.configuration.manager;
+package cross.platform.test.suite.service;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public final class ReportManager {
+public final class Reporter {
     private static final ExtentReports extentReports = new ExtentReports();
     private static final List<String> reporterFilePaths = new ArrayList<>();
 

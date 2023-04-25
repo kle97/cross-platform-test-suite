@@ -3,13 +3,13 @@ package cross.platform.test.suite.test.catalog;
 import cross.platform.test.suite.annotation.DisableAutoReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
-import cross.platform.test.suite.assertion.LoggingAssertion;
-import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.model.Product;
 import cross.platform.test.suite.pageobject.CatalogPage;
-import cross.platform.test.suite.pageobject.factory.POMFactory;
 import cross.platform.test.suite.properties.UserInfo;
+import cross.platform.test.suite.service.DriverManager;
+import cross.platform.test.suite.service.LoggingAssertion;
+import cross.platform.test.suite.service.POMFactory;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.test.common.BaseTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +31,10 @@ import java.util.List;
 public class CatalogTest extends BaseTest {
 
     private final UserInfo userInfo;
-
     private final DriverManager driverManager;
     private final POMFactory pomFactory;
-    private final ReportManager reportManager = new ReportManager();
-    private final LoggingAssertion assertion = new LoggingAssertion(reportManager, log);
+    private final Reporter reporter;
+    private final LoggingAssertion assertion;
 
     private List<Product> productList;
     private int index;
@@ -64,15 +63,15 @@ public class CatalogTest extends BaseTest {
 
     @Test(description = "Verify catalog products.", dependsOnMethods = "verifyCatalogTitle")
     public void verifyCatalog() {
-        this.productList = pomFactory.get(CatalogPage.class).getProductList(reportManager.getCurrentReport());
+        this.productList = pomFactory.get(CatalogPage.class).getProductList(reporter.getCurrentReport());
         this.index = 0;
     }
 
     @DisableAutoReport
     @Test(dataProvider = "productProvider", dependsOnMethods = "verifyCatalog")
     public void verifyProducts(String productName, String productPrice) {
-        reportManager.appendChildReport("verifyCatalog", productName, 
-                                        "Verify product '" + productName + ".'");
+        reporter.appendChildReport("verifyCatalog", productName,
+                                   "Verify product '" + productName + ".'");
         Product product = this.productList.get(index++);
         assertion.assertEquals(productName, productName, product.getProductName());
         assertion.assertEquals(productPrice, productPrice, product.getProductPrice());

@@ -1,14 +1,14 @@
 package cross.platform.test.suite.test.catalog;
 
-import cross.platform.test.suite.configuration.guicemodule.BaseModule;
+import com.google.inject.AbstractModule;
+import cross.platform.test.suite.configuration.guicemodule.TestConfigModule;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.ConfigMap;
-import cross.platform.test.suite.properties.TestConfig;
 import cross.platform.test.suite.utility.ConfigUtil;
 
 import javax.inject.Inject;
 
-public class CatalogModule extends BaseModule {
+public class CatalogModule extends AbstractModule {
 
     private final ConfigMap configMap;
 
@@ -20,8 +20,7 @@ public class CatalogModule extends BaseModule {
     @Override
     protected void configure() {
         if (ConfigUtil.isParallel()) {
-            TestConfig testConfig = this.bindConfigs(TestConst.CONFIG_MAPPING_1_PATH, configMap);
-            bindEssentials();
+            install(new TestConfigModule(configMap, TestConst.CONFIG_MAPPING_1_PATH));
         }
     }
 }

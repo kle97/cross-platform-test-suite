@@ -6,10 +6,11 @@ import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.annotation.DisableAutoReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
-import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.constant.When;
+import cross.platform.test.suite.service.DriverManager;
+import cross.platform.test.suite.service.LoggingAssertion;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
@@ -28,7 +29,8 @@ import java.nio.file.Path;
 @Slf4j
 public abstract class BaseTest {
 
-    public abstract ReportManager getReportManager();
+    public abstract Reporter getReporter();
+    public abstract LoggingAssertion getAssertion();
     public abstract DriverManager getDriverManager();
 
     protected AppiumDriver getDriver() {
@@ -42,7 +44,8 @@ public abstract class BaseTest {
         if (testName.isBlank()) {
             testName = TestConst.DEFAULT_TEST_NAME;
         }
-        this.getReportManager().createClassReport(className, testName);
+        this.getReporter().createClassReport(className, testName);
+        this.getAssertion().setLogger(LoggerFactory.getLogger(this.getClass()));
 
         ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
         if (screenRecordAnnotation != null) {
@@ -54,7 +57,7 @@ public abstract class BaseTest {
     protected void afterClass() {
         ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
         if (screenRecordAnnotation != null) {
-            ExtentTest classReport = getReportManager().getCurrentClassReport();
+            ExtentTest classReport = getReporter().getCurrentClassReport();
             if (classReport != null && classReport.getStatus().getName().equals("Fail")) {
                 this.stopRecordingScreen(classReport, this.getClass().getSimpleName());
             } else {
@@ -72,11 +75,11 @@ public abstract class BaseTest {
         String description = testMethod.getDescription();
         DisableAutoReport disableAutoReportAnnotation = method.getDeclaredAnnotation(DisableAutoReport.class);
         if (disableAutoReportAnnotation == null) {
-            this.getReportManager().createMethodReport(methodName, className, testName);
+            this.getReporter().createMethodReport(methodName, className, testName);
         }
 
         if (!description.isBlank()) {
-            this.getReportManager().info("Description: " + description);
+            this.getReporter().info("Description: " + description);
             LoggerFactory.getLogger(className).info("Description: " + description);
         }
 
@@ -97,7 +100,7 @@ public abstract class BaseTest {
     @AfterMethod
     protected void afterMethod(Method method) {
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
-        ExtentTest methodReport = getReportManager().findReport(method.getName());
+        ExtentTest methodReport = getReporter().findReport(method.getName());
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.AFTER))) {
             String methodName = method.getName();
             String screenshotTitle = "after" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
@@ -129,7 +132,7 @@ public abstract class BaseTest {
                 Media media = MediaEntityBuilder.createScreenCaptureFromPath(screenshotFile.getAbsolutePath(), screenshotTitle).build();
                 report.info(media);
             } else {
-                getReportManager().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
+                getReporter().addScreenshot(screenshotFile.getAbsolutePath(), screenshotTitle);
             }
         }
     }
@@ -159,7 +162,7 @@ public abstract class BaseTest {
             if (report != null) {
                 report.info(attachment);
             } else {
-                getReportManager().info(attachment);
+                getReporter().info(attachment);
             }
         }
     }

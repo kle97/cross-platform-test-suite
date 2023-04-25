@@ -1,7 +1,7 @@
 package cross.platform.test.suite.helper;
 
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
+import cross.platform.test.suite.service.Reporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
@@ -14,7 +14,7 @@ public interface ReportHelper {
 
     Logger log = LoggerFactory.getLogger(ReportHelper.class);
 
-    ReportManager getReportManager();
+    Reporter getReportManager();
 
     @BeforeClass
     default void reportHelperBeforeClass(ITestContext context) {

@@ -14,7 +14,7 @@ public class PageObjectModule extends AbstractModule {
     @Override
     protected void configure() {
         MapBinder<Class<?>, AbstractPage> genericMap = MapBinder.newMapBinder(binder(), new TypeLiteral<>() {}, new TypeLiteral<>() {});
-        MapBinder<Class<?>, AbstractPage> iosMap = MapBinder.newMapBinder(binder(), new TypeLiteral<>() {}, new TypeLiteral<>() {});
+        MapBinder<Class<?>, AbstractPage> iOSMap = MapBinder.newMapBinder(binder(), new TypeLiteral<>() {}, new TypeLiteral<>() {});
         MapBinder<Class<?>, AbstractPage> androidMap = MapBinder.newMapBinder(binder(), new TypeLiteral<>() {}, new TypeLiteral<>() {});
         
         genericMap.addBinding(SideNavigationPage.class).to(SideNavigationGenericPage.class);

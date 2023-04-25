@@ -1,6 +1,5 @@
-package cross.platform.test.suite.test.common;
+package cross.platform.test.suite.service;
 
-import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.properties.ServerArguments;

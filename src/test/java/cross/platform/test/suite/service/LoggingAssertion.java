@@ -1,12 +1,11 @@
-package cross.platform.test.suite.assertion;
+package cross.platform.test.suite.service;
 
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.AnsiColor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.asserts.Assertion;
 import org.testng.asserts.IAssert;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -14,21 +13,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LoggingAssertion extends Assertion {
     private static final String DEFAULT_SOFT_ASSERT_MESSAGE = "The following asserts failed:";
+    
     private static final Map<AssertionError, IAssert<?>> errorMap = new ConcurrentHashMap<>();
-    private ReportManager reportManager;
-    private final Logger log;
+    
+    private final Reporter reporter;
+    private Logger log;
 
-    public LoggingAssertion(ReportManager reportManager, Logger log) {
-        this.reportManager = reportManager;
+    @Inject
+    public LoggingAssertion(Reporter reporter) {
+        this.reporter = reporter;
+    }
+    
+    public void setLogger(Logger log) {
         this.log = log;
     }
-
-    public LoggingAssertion(Logger log) {
-        this.log = log;
-    }
-
-    public LoggingAssertion() {
-        this.log = LoggerFactory.getLogger(LoggingAssertion.class);
+    
+    public Logger getLogger() {
+        return this.log;
     }
 
     @Override
@@ -58,16 +59,16 @@ public class LoggingAssertion extends Assertion {
     private void logFail(String message) {
         String logMessage = AnsiColor.RED_BOLD + "   FAIL   " + AnsiColor.RESET + message;
         this.log.info(logMessage);
-        if (this.reportManager != null) {
-            this.reportManager.fail(message);
+        if (this.reporter != null) {
+            this.reporter.fail(message);
         }
     }
 
     private void logPass(String message) {
         String logMessage = AnsiColor.GREEN_BOLD + "   PASS   " + AnsiColor.RESET + message;
         this.log.info(logMessage);
-        if (this.reportManager != null) {
-            this.reportManager.pass(message);
+        if (this.reporter != null) {
+            this.reporter.pass(message);
         }
     }
 

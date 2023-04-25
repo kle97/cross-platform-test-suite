@@ -1,4 +1,4 @@
-package cross.platform.test.suite.configuration.manager;
+package cross.platform.test.suite.service;
 
 import io.appium.java_client.AppiumDriver;
 
@@ -15,7 +15,9 @@ public final class DriverManager {
     }
 
     public void removeDriver() {
-        this.appiumDriverThreadLocal.remove();
+        if (hasDriver()) {
+            this.appiumDriverThreadLocal.remove();
+        }
     }
 
     public boolean hasDriver() {

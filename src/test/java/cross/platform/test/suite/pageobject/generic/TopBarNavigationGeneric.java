@@ -3,7 +3,7 @@ package cross.platform.test.suite.pageobject.generic;
 import cross.platform.test.suite.pageobject.AbstractPage;
 import cross.platform.test.suite.pageobject.SideNavigationPage;
 import cross.platform.test.suite.pageobject.TopBarNavigation;
-import cross.platform.test.suite.pageobject.factory.POMFactory;
+import cross.platform.test.suite.service.POMFactory;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;

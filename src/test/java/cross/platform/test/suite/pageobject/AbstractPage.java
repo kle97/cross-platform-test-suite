@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.constant.TestConst;
-import cross.platform.test.suite.pageobject.factory.POMFactory;
+import cross.platform.test.suite.service.POMFactory;
 import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
@@ -12,7 +12,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.io.File;
 
-public abstract class AbstractPage implements Page {
+public abstract class AbstractPage {
 
     private final AppiumDriver appiumDriver;
     private final POMFactory pomFactory;

@@ -2,9 +2,9 @@ package cross.platform.test.suite.helper;
 
 import com.aventstack.extentreports.ExtentTest;
 import cross.platform.test.suite.annotation.ScreenRecord;
-import cross.platform.test.suite.configuration.manager.DriverManager;
-import cross.platform.test.suite.configuration.manager.ReportManager;
 import cross.platform.test.suite.constant.TestConst;
+import cross.platform.test.suite.service.DriverManager;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
@@ -19,7 +19,7 @@ import java.nio.file.Path;
 public interface ScreenRecordingHelper {
     
     DriverManager getDriverManager();
-    ReportManager getReportManager();
+    Reporter getReportManager();
 
     @BeforeMethod
     default void screenRecordingHelperBeforeMethod(Method method) {

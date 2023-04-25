@@ -1,19 +1,21 @@
 package cross.platform.test.suite.configuration.guicemodule;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
-import cross.platform.test.suite.configuration.manager.DriverManager;
 import cross.platform.test.suite.constant.TestConst;
 import cross.platform.test.suite.properties.ConfigMap;
 import cross.platform.test.suite.properties.MobileConfig;
-import cross.platform.test.suite.properties.TestConfig;
 import cross.platform.test.suite.properties.UserInfo;
+import cross.platform.test.suite.service.DriverManager;
+import cross.platform.test.suite.service.LoggingAssertion;
+import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
 @Slf4j
-public class ParentModule extends BaseModule {
+public class ParentModule extends AbstractModule {
     
     @Override
     protected void configure() {
@@ -23,10 +25,13 @@ public class ParentModule extends BaseModule {
         
         bind(ConfigMap.class).toInstance(configMap);
         bind(DriverManager.class).in(Scopes.SINGLETON);
+        bind(LoggingAssertion.class).in(Scopes.SINGLETON);
+        bind(Reporter.class).in(Scopes.SINGLETON);
+        
+        install(new PageObjectModule());
         
         if (!ConfigUtil.isParallel()) {
-            TestConfig testConfig = this.bindConfigs(TestConst.DEFAULT_CONFIG_MAPPING_PATH, configMap);
-            
+            install(new TestConfigModule(configMap, TestConst.DEFAULT_CONFIG_MAPPING_PATH));
         }
     }
 }

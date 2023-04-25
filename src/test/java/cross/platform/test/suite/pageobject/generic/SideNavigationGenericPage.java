@@ -4,7 +4,7 @@ import cross.platform.test.suite.constant.Direction;
 import cross.platform.test.suite.pageobject.AbstractPage;
 import cross.platform.test.suite.pageobject.CatalogPage;
 import cross.platform.test.suite.pageobject.SideNavigationPage;
-import cross.platform.test.suite.pageobject.factory.POMFactory;
+import cross.platform.test.suite.service.POMFactory;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.SwiperUtil;
 import io.appium.java_client.AppiumDriver;
