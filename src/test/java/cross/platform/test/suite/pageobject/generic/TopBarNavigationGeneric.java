@@ -1,12 +1,14 @@
 package cross.platform.test.suite.pageobject.generic;
 
-import cross.platform.test.suite.pageobject.AbstractPage;
 import cross.platform.test.suite.pageobject.SideNavigationPage;
 import cross.platform.test.suite.pageobject.TopBarNavigation;
+import cross.platform.test.suite.pageobject.common.AbstractPage;
+import cross.platform.test.suite.service.DriverManager;
 import cross.platform.test.suite.service.POMFactory;
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
+
+import javax.inject.Inject;
 
 public abstract class TopBarNavigationGeneric extends AbstractPage implements TopBarNavigation {
 
@@ -19,8 +21,9 @@ public abstract class TopBarNavigationGeneric extends AbstractPage implements To
     @AndroidFindBy(accessibility = "cart badge")
     private WebElement cartBadge;
 
-    public TopBarNavigationGeneric(AppiumDriver appiumDriver, POMFactory pomFactory) {
-        super(appiumDriver, pomFactory);
+    @Inject
+    public TopBarNavigationGeneric(DriverManager driverManager, POMFactory pomFactory) {
+        super(driverManager, pomFactory);
     }
 
     @Override

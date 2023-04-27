@@ -1,9 +1,10 @@
-package cross.platform.test.suite.pageobject;
+package cross.platform.test.suite.pageobject.common;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
 import cross.platform.test.suite.constant.TestConst;
+import cross.platform.test.suite.service.DriverManager;
 import cross.platform.test.suite.service.POMFactory;
 import cross.platform.test.suite.utility.ScreenUtil;
 import io.appium.java_client.AppiumDriver;
@@ -14,16 +15,23 @@ import java.io.File;
 
 public abstract class AbstractPage {
 
-    private final AppiumDriver appiumDriver;
+    private final DriverManager driverManager;
     private final POMFactory pomFactory;
+    private AppiumDriver appiumDriver;
 
-    public AbstractPage(AppiumDriver appiumDriver, POMFactory pomFactory) {
-        this.appiumDriver = appiumDriver;
+    public AbstractPage(DriverManager driverManager, POMFactory pomFactory) {
+        this.driverManager = driverManager;
         this.pomFactory = pomFactory;
-        PageFactory.initElements(new AppiumFieldDecorator(appiumDriver), this);
+    }
+    
+    public void init() {
+        PageFactory.initElements(new AppiumFieldDecorator(this.driverManager.getDriver()), this);
     }
 
     protected AppiumDriver driver() {
+        if (this.appiumDriver == null) {
+            this.appiumDriver = this.driverManager.getDriver();
+        }
         return this.appiumDriver;
     }
 

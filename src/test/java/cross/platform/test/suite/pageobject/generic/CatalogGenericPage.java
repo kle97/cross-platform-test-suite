@@ -4,15 +4,16 @@ import com.aventstack.extentreports.ExtentTest;
 import cross.platform.test.suite.constant.Direction;
 import cross.platform.test.suite.model.Product;
 import cross.platform.test.suite.pageobject.CatalogPage;
+import cross.platform.test.suite.service.DriverManager;
 import cross.platform.test.suite.service.POMFactory;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.SwiperUtil;
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidBy;
 import io.appium.java_client.pagefactory.AndroidFindAll;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class CatalogGenericPage extends TopBarNavigationGeneric implements Catal
     @AndroidFindAll(@AndroidBy(xpath = "//android.widget.TextView[@content-desc='store item price']"))
     private List<WebElement> productPriceList;
 
-    public CatalogGenericPage(AppiumDriver appiumDriver, POMFactory pomFactory) {
-        super(appiumDriver, pomFactory);
+    @Inject
+    public CatalogGenericPage(DriverManager driverManager, POMFactory pomFactory) {
+        super(driverManager, pomFactory);
     }
 
     @Override

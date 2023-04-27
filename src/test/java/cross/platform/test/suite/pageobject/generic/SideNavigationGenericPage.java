@@ -1,18 +1,19 @@
 package cross.platform.test.suite.pageobject.generic;
 
 import cross.platform.test.suite.constant.Direction;
-import cross.platform.test.suite.pageobject.AbstractPage;
 import cross.platform.test.suite.pageobject.CatalogPage;
 import cross.platform.test.suite.pageobject.SideNavigationPage;
+import cross.platform.test.suite.pageobject.common.AbstractPage;
+import cross.platform.test.suite.service.DriverManager;
 import cross.platform.test.suite.service.POMFactory;
 import cross.platform.test.suite.utility.DriverUtil;
 import cross.platform.test.suite.utility.SwiperUtil;
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidBy;
 import io.appium.java_client.pagefactory.AndroidFindAll;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class SideNavigationGenericPage extends AbstractPage implements SideNavigationPage {
@@ -23,8 +24,9 @@ public class SideNavigationGenericPage extends AbstractPage implements SideNavig
     @AndroidFindAll(@AndroidBy(xpath = "//android.view.ViewGroup/android.widget.TextView"))
     private List<WebElement> menuItemList;
 
-    public SideNavigationGenericPage(AppiumDriver appiumDriver, POMFactory pomFactory) {
-        super(appiumDriver, pomFactory);
+    @Inject
+    public SideNavigationGenericPage(DriverManager driverManager, POMFactory pomFactory) {
+        super(driverManager, pomFactory);
     }
 
     @Override

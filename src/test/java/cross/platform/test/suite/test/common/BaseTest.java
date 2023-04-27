@@ -33,10 +33,6 @@ public abstract class BaseTest {
     public abstract LoggingAssertion getAssertion();
     public abstract DriverManager getDriverManager();
 
-    protected AppiumDriver getDriver() {
-        return this.getDriverManager().getDriver();
-    }
-
     @BeforeClass
     protected void beforeClass(ITestContext context) {
         String className = this.getClass().getSimpleName();
@@ -117,6 +113,11 @@ public abstract class BaseTest {
                 }
             }
         }
+    }
+
+    @Test(enabled = false)
+    protected AppiumDriver getDriver() {
+        return this.getDriverManager().getDriver();
     }
 
     @Test(enabled = false)
