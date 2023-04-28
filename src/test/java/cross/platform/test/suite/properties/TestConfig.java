@@ -1,15 +1,11 @@
 package cross.platform.test.suite.properties;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-import javax.inject.Inject;
-
-@Getter
-@RequiredArgsConstructor(onConstructor = @__(@Inject))
+@Value
 public class TestConfig {
     
-    private final MobileConfig mobileConfig;
+    MobileConfig mobileConfig;
 
-    private final UserInfo userInfo;
+    UserInfo userInfo;
 }

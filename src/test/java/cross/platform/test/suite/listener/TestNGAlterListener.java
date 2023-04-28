@@ -1,6 +1,6 @@
-package cross.platform.test.suite.configuration.listener;
+package cross.platform.test.suite.listener;
 
-import cross.platform.test.suite.configuration.guicemodule.ParentModule;
+import cross.platform.test.suite.guicemodule.common.ParentModule;
 import org.testng.IAlterSuiteListener;
 import org.testng.xml.XmlSuite;
 

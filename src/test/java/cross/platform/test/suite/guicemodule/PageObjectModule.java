@@ -1,4 +1,4 @@
-package cross.platform.test.suite.configuration.guicemodule;
+package cross.platform.test.suite.guicemodule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;

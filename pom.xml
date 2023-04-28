@@ -95,13 +95,13 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.19.0</version>
+            <version>2.20.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>2.19.0</version>
+            <version>2.20.0</version>
             <scope>test</scope>
         </dependency>
         
@@ -119,29 +119,44 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0</version>
                     <configuration>
+                        <argLine>--add-opens="java.base/java.lang=ALL-UNNAMED"</argLine>
+                        
+                        <systemProperties>
+                            <parallel>${parallel}</parallel>
+                        </systemProperties>
+                        
                         <suiteXmlFiles>
                             <suiteXmlFile>resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
-                        <!--<parallel>${parallel}</parallel>-->
-                        <!--<threadcount>${threadcount}</threadcount>-->
+                        
                         <properties>
                             <property>
                                 <name>parallel</name>
                                 <value>${parallel}</value>
-                                
+                            </property>
+                            
+                            <property>
                                 <name>threadcount</name>
                                 <value>${threadcount}</value>
-                                
+                            </property>
+                            
+                            <property>
                                 <name>testnames</name>
                                 <value>${testnames}</value>
                             </property>
+                            
+                            <property>
+                                <name>usedefaultlisteners</name>
+                                <value>false</value>
+                            </property>
+                            
                         </properties>
                     </configuration>
                 </plugin>

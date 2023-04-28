@@ -3,6 +3,7 @@ package cross.platform.test.suite.test.catalog;
 import cross.platform.test.suite.annotation.DisableAutoReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
+import cross.platform.test.suite.guicemodule.common.ModuleFactory;
 import cross.platform.test.suite.model.Product;
 import cross.platform.test.suite.pageobject.CatalogPage;
 import cross.platform.test.suite.properties.UserInfo;
@@ -27,7 +28,7 @@ import java.util.List;
 @ScreenRecord
 @Getter
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-@Guice(modules = CatalogModule.class)
+@Guice(moduleFactory = ModuleFactory.class)
 public class CatalogTest extends BaseTest {
 
     private final UserInfo userInfo;

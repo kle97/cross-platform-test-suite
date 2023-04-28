@@ -1,4 +1,4 @@
-package cross.platform.test.suite.configuration.guicemodule;
+package cross.platform.test.suite.guicemodule.common;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -28,10 +28,8 @@ public class ParentModule extends AbstractModule {
         bind(LoggingAssertion.class).in(Scopes.SINGLETON);
         bind(Reporter.class).in(Scopes.SINGLETON);
         
-        install(new PageObjectModule());
-        
         if (!ConfigUtil.isParallel()) {
-            install(new TestConfigModule(configMap, TestConst.DEFAULT_CONFIG_MAPPING_PATH));
+            install(new BaseModule(configMap, TestConst.DEFAULT_CONFIG_MAPPING_PATH));
         }
     }
 }
