@@ -15,7 +15,7 @@
         
         <parallel>none</parallel>
         <threadcount>4</threadcount>
-        <testnames></testnames>
+        <testnames>AllTests</testnames>
     </properties>
 
     <dependencies>

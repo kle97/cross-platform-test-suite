@@ -1,6 +1,8 @@
 package cross.platform.test.suite.pageobject;
 
-public interface SideNavigationPage {
+import cross.platform.test.suite.pageobject.common.Page;
+
+public interface SideNavigationPage extends Page {
 
     String getMenuItemLabel(String label);
 

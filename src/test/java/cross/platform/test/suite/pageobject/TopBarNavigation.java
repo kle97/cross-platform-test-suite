@@ -1,6 +1,8 @@
 package cross.platform.test.suite.pageobject;
 
-public interface TopBarNavigation {
+import cross.platform.test.suite.pageobject.common.Page;
+
+public interface TopBarNavigation extends Page {
 
     SideNavigationPage clickSideMenu();
 

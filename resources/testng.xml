@@ -8,6 +8,12 @@
         <listener class-name="cross.platform.test.suite.listener.TestNGListener" />
     </listeners>
 
+    <test name="AllTests">
+        <packages>
+            <package name="cross.platform.test.suite.test.*" />
+        </packages>
+    </test>
+
     <test name="Catalog">
         <classes>
             <class name="cross.platform.test.suite.test.catalog.CatalogTest"/>

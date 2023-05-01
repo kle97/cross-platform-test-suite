@@ -1,6 +1,7 @@
 package cross.platform.test.suite.guicemodule.common;
 
 import com.google.inject.Module;
+import cross.platform.test.suite.guicemodule.AllTestsModule;
 import cross.platform.test.suite.guicemodule.CatalogModule;
 import cross.platform.test.suite.properties.ConfigMap;
 import cross.platform.test.suite.utility.ConfigUtil;
@@ -19,6 +20,7 @@ public class ModuleFactory implements IModuleFactory {
     private static final Map<String, Class<? extends Module>> moduleClassMap = new ConcurrentHashMap<>();
     static {
         moduleClassMap.put("Catalog", CatalogModule.class);
+        moduleClassMap.put("AllTests", AllTestsModule.class);
     }
     
     private static final Map<String, Module> cachedModuleMap = new ConcurrentHashMap<>();
@@ -46,14 +48,14 @@ public class ModuleFactory implements IModuleFactory {
             try {
                 Module module = moduleClass.getConstructor(ConfigMap.class).newInstance(this.configMap);
                 cachedModuleMap.put(testName, module);
-                log.info("Mapping guice module '{}' to class '{}'", module.getClass().getSimpleName(), testClass.getSimpleName());
+                log.info("Mapping guice module '{}' to class '{}'!", module.getClass().getSimpleName(), testClass.getSimpleName());
                 return module;
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
-                log.error("Mapping failed for guice module '{}'", moduleClass);
+                log.error("Mapping for guice module '{}' failed!", moduleClass);
                 throw new RuntimeException(e);
             }
         } else {
-            log.error("Couldn't map guice module for class '{}'", testClass.getSimpleName());
+            log.error("Couldn't map guice module for class '{}'!", testClass.getSimpleName());
             return null;
         }
     }

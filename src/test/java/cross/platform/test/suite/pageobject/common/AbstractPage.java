@@ -13,7 +13,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.io.File;
 
-public abstract class AbstractPage {
+public abstract class AbstractPage implements Page {
 
     private final DriverManager driverManager;
     private final POMFactory pomFactory;
@@ -24,6 +24,7 @@ public abstract class AbstractPage {
         this.pomFactory = pomFactory;
     }
     
+    @Override
     public void init() {
         PageFactory.initElements(new AppiumFieldDecorator(this.driverManager.getDriver()), this);
     }

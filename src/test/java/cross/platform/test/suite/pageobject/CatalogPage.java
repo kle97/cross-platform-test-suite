@@ -5,7 +5,7 @@ import cross.platform.test.suite.model.Product;
 
 import java.util.List;
 
-public interface CatalogPage {
+public interface CatalogPage extends TopBarNavigation {
 
     String getCatalogTitle();
 
