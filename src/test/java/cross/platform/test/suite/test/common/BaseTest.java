@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import cross.platform.test.suite.annotation.DisableAutoReport;
+import cross.platform.test.suite.annotation.AppendReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.constant.TestConst;
@@ -120,12 +120,6 @@ public abstract class BaseTest {
 
     @BeforeClass
     protected void beforeClass(ITestContext context) {
-        String className = this.getClass().getSimpleName();
-        String testName = context.getName();
-        if (testName.isBlank()) {
-            testName = TestConst.DEFAULT_TEST_NAME;
-        }
-        this.getReporter().createClassReport(className, testName);
         this.getAssertion().setLogger(LoggerFactory.getLogger(this.getClass()));
 
         ScreenRecord screenRecordAnnotation = this.getClass().getDeclaredAnnotation(ScreenRecord.class);
@@ -153,17 +147,19 @@ public abstract class BaseTest {
         String className = testMethod.getRealClass().getSimpleName();
         String testName = result.getTestName();
         String methodName = testMethod.getMethodName();
-        String description = testMethod.getDescription();
-        DisableAutoReport disableAutoReportAnnotation = method.getDeclaredAnnotation(DisableAutoReport.class);
-        if (disableAutoReportAnnotation == null) {
-            this.getReporter().createMethodReport(methodName, className, testName);
-        }
+        
+        AppendReport appendReport = method.getDeclaredAnnotation(AppendReport.class);
+        if (appendReport != null) {
+            String reportName = !appendReport.name().isBlank() ? appendReport.name() : methodName;
+            this.getReporter().createMethodReport(reportName, className, testName);
 
-        if (!description.isBlank()) {
-            this.getReporter().info("Description: " + description);
-            LoggerFactory.getLogger(className).info("Description: " + description);
+            String description = appendReport.description();
+            if (!description.isBlank()) {
+                this.getReporter().info("Description: " + description);
+                LoggerFactory.getLogger(className).info("Description: " + description);
+            }
         }
-
+        
         Screenshot screenshotAnnotation = method.getDeclaredAnnotation(Screenshot.class);
         if (screenshotAnnotation != null && (screenshotAnnotation.when().equals(When.BOTH) || screenshotAnnotation.when().equals(When.BEFORE))) {
             String screenshotTitle = "before" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);

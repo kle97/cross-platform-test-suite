@@ -10,5 +10,4 @@ public class ConfigMap {
     Map<String, MobileConfig> mobileConfigMap;
     
     Map<String, UserInfo> userInfoMap;
-    
 }

@@ -7,8 +7,6 @@ import cross.platform.test.suite.properties.ConfigMap;
 import cross.platform.test.suite.properties.MobileConfig;
 import cross.platform.test.suite.properties.UserInfo;
 import cross.platform.test.suite.service.DriverManager;
-import cross.platform.test.suite.service.LoggingAssertion;
-import cross.platform.test.suite.service.Reporter;
 import cross.platform.test.suite.utility.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,11 +23,5 @@ public class ParentModule extends AbstractModule {
         
         bind(ConfigMap.class).toInstance(configMap);
         bind(DriverManager.class).in(Scopes.SINGLETON);
-        bind(LoggingAssertion.class).in(Scopes.SINGLETON);
-        bind(Reporter.class).in(Scopes.SINGLETON);
-        
-        if (!ConfigUtil.isParallel()) {
-            install(new BaseModule(configMap, TestConst.DEFAULT_CONFIG_MAPPING_PATH));
-        }
     }
 }

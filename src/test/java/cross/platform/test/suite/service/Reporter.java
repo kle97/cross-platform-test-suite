@@ -17,6 +17,7 @@ public final class Reporter {
     private static final List<String> reporterFilePaths = new ArrayList<>();
 
     private ExtentTest currentClassReport;
+    private String currentClassName;
     private final List<ExtentTest> currentReportList = new ArrayList<>();
     private ExtentTest currentReport;
 
@@ -67,7 +68,7 @@ public final class Reporter {
     }
     
     public ExtentTest createClassReport(String className, String testTag) { 
-        if (this.hasClassReport()) {
+        if (this.hasClassReport() && this.currentClassName.equals(className)) {
             return this.currentClassReport;
         }
 
@@ -76,6 +77,7 @@ public final class Reporter {
             classReport.assignCategory(testTag);
         }
         this.currentClassReport = classReport;
+        this.currentClassName = className;
         this.currentReport = classReport;
         return classReport;
     }
@@ -90,7 +92,7 @@ public final class Reporter {
 
     public ExtentTest createMethodReport(String reportName, String className, String testName) {
         ExtentTest classReport;
-        if (this.hasClassReport()) {
+        if (this.hasClassReport() && this.currentClassName.equals(className)) {
             classReport = this.currentClassReport;
         } else {
             classReport = this.createClassReport(className, testName);

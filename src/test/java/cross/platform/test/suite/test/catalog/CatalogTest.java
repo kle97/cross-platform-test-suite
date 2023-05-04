@@ -1,6 +1,6 @@
 package cross.platform.test.suite.test.catalog;
 
-import cross.platform.test.suite.annotation.DisableAutoReport;
+import cross.platform.test.suite.annotation.AppendReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
 import cross.platform.test.suite.guicemodule.common.ModuleFactory;
@@ -54,32 +54,33 @@ public class CatalogTest extends BaseTest {
         return productList.iterator();
     }
 
+    @Test 
     @Screenshot
-    @Test(description = "Verify catalog page title.")
+    @AppendReport(description = "Verify catalog page title.")
     public void verifyCatalogTitle() {
         assertion.assertEquals("Username", "bod@example.com", userInfo.getUsername());
         assertion.assertEquals("Password", "10203040", userInfo.getPassword());
         assertion.assertEquals("Title", "Product", pomFactory.get(CatalogPage.class).getCatalogTitle());
     }
 
-    @Test(description = "Verify catalog products.", dependsOnMethods = "verifyCatalogTitle")
+    @Test(dependsOnMethods = "verifyCatalogTitle")
+    @AppendReport(description = "Verify catalog products.")
     public void verifyCatalog() {
         this.productList = pomFactory.get(CatalogPage.class).getProductList(reporter.getCurrentReport());
         this.index = 0;
     }
 
-    @DisableAutoReport
     @Test(dataProvider = "productProvider", dependsOnMethods = "verifyCatalog")
     public void verifyProducts(String productName, String productPrice) {
-        reporter.appendChildReport("verifyCatalog", productName,
-                                   "Verify product '" + productName + ".'");
+        reporter.appendChildReport("verifyCatalog", productName);
         Product product = this.productList.get(index++);
         assertion.assertEquals(productName, productName, product.getProductName());
         assertion.assertEquals(productPrice, productPrice, product.getProductPrice());
     }
 
     @Screenshot
-    @Test(description = "Verify scroll to top", dependsOnMethods = "verifyProducts")
+    @AppendReport(description = "Verify scroll to top")
+    @Test(dependsOnMethods = "verifyProducts")
     public void scrollBackToTop() {
         pomFactory.get(CatalogPage.class).scrollToTop();
     }
