@@ -39,6 +39,8 @@ import java.time.format.DateTimeFormatter;
 @Getter
 public abstract class BaseTest {
 
+    private final String testOrder = String.valueOf(System.nanoTime());
+    
     @Inject
     private Reporter reporter;
     
@@ -142,10 +144,10 @@ public abstract class BaseTest {
     }
 
     @BeforeMethod
-    protected void beforeMethod(ITestResult result, Method method) {
+    protected void beforeMethod(ITestContext iTestContext, ITestResult result, Method method) {
         ITestNGMethod testMethod = result.getMethod();
         String className = testMethod.getRealClass().getSimpleName();
-        String testName = result.getTestName();
+        String testName = iTestContext.getName();
         String methodName = testMethod.getMethodName();
         
         AppendReport appendReport = method.getDeclaredAnnotation(AppendReport.class);
@@ -252,5 +254,10 @@ public abstract class BaseTest {
                 getReporter().info(attachment);
             }
         }
+    }
+    
+    @Test(enabled = false)
+    public String toString() {
+        return testOrder + "@" + getClass().getSimpleName();
     }
 }

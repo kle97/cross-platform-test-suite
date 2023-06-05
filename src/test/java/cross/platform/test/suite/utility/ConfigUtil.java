@@ -32,34 +32,34 @@ public final class ConfigUtil {
     
     public static <T> T readJsonFileAs(String filePath, Class<T> clazz) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
-            return JacksonUtil.getDefaultObjectReader().readValue(inputStream, clazz);
-        } catch (IOException ex) {
-            log.debug(ex.getMessage());
+            return JacksonUtil.readerFor(clazz).readValue(inputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
             return null;
         }
     }
 
     public static <T> T readJsonFileAs(String filePath, TypeReference<T> typeReference) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
-            return JacksonUtil.getObjectReader(typeReference).readValue(inputStream);
-        } catch (IOException ex) {
-            log.debug(ex.getMessage());
+            return JacksonUtil.readerFor(typeReference).readValue(inputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
             return null;
         }
     }
 
     public static <T> T readJsonFileAs(String filePath, JavaType javaType) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
-            return JacksonUtil.getObjectReader(javaType).readValue(inputStream);
-        } catch (IOException ex) {
-            log.debug(ex.getMessage());
+            return JacksonUtil.readerFor(javaType).readValue(inputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
             return null;
         }
     }
     
     public static Properties readJsonFileAsProperties(String filePath) {
         try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath)) {
-            Object config = JacksonUtil.getDefaultObjectReader().readValue(inputStream, Object.class);
+            Object config = JacksonUtil.readerFor(Object.class).readValue(inputStream);
             Properties configAsProperties = JacksonUtil.getDefaultJavaPropsMapper().writeValueAsProperties(config, propsSchema);
             for (String systemPropertiesKey: System.getProperties().stringPropertyNames()) {
                 String systemPropertiesValue = System.getProperty(systemPropertiesKey);

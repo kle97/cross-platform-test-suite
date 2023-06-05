@@ -8,6 +8,9 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 
 public final class JacksonUtil {
     
+    // Jackson's ObjectMapper configuration for JSON5 format
+    // Jackson still lacks support for hexadecimal number and additional white space characters in JSON5
+    // See: https://stackoverflow.com/questions/68312227/can-the-jackson-parser-be-used-to-parse-json5/68312228#68312228
     private static final ObjectMapper objectMapper = JsonMapper
             .builder()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -18,11 +21,11 @@ public final class JacksonUtil {
             .enable(JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES)
             .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
             .enable(JsonReadFeature.ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS)
+            .enable(JsonReadFeature.ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS)
+            .enable(JsonReadFeature.ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS)
             .build();
     
     private static final JavaPropsMapper defaultJavaPropsMapper = new JavaPropsMapper();
-    private static final ObjectReader defaultObjectReader = objectMapper.reader();
-    private static final ObjectWriter defaultObjectWriter = objectMapper.writer();
     
     private JacksonUtil() {
     }
@@ -30,48 +33,28 @@ public final class JacksonUtil {
     public static JavaPropsMapper getDefaultJavaPropsMapper() {
         return defaultJavaPropsMapper;
     }
-    
-    public static JavaPropsMapper getJavaPropsMapper() {
-        return defaultJavaPropsMapper.copy();
-    }
-    
-    public static ObjectReader getDefaultObjectReader() {
-        return defaultObjectReader;
+
+    public static ObjectReader readerFor(Class<?> type) {
+        return objectMapper.readerFor(type);
     }
 
-    public static ObjectWriter getDefaultObjectWriter() {
-        return defaultObjectWriter;
-    }
-    
-    public static ObjectReader getObjectReader() {
-        return objectMapper.reader();
+    public static ObjectReader readerFor(TypeReference<?> typeReference) {
+        return objectMapper.readerFor(typeReference);
     }
 
-    public static ObjectReader getObjectReader(Class<?> type) {
-        return objectMapper.reader().forType(type);
+    public static ObjectReader readerFor(JavaType type) {
+        return objectMapper.readerFor(type);
     }
 
-    public static ObjectReader getObjectReader(TypeReference<?> typeReference) {
-        return objectMapper.reader().forType(typeReference);
+    public static ObjectWriter writerFor(Class<?> type) {
+        return objectMapper.writerFor(type);
     }
 
-    public static ObjectReader getObjectReader(JavaType type) {
-        return objectMapper.reader().forType(type);
+    public static ObjectWriter writerFor(TypeReference<?> typeReference) {
+        return objectMapper.writerFor(typeReference);
     }
 
-    public static ObjectWriter getObjectWriter() {
-        return objectMapper.writer();
-    }
-
-    public static ObjectWriter getObjectWriter(Class<?> type) {
-        return objectMapper.writer().forType(type);
-    }
-
-    public static ObjectWriter getObjectWriter(TypeReference<?> typeReference) {
-        return objectMapper.writer().forType(typeReference);
-    }
-
-    public static ObjectWriter getObjectWriter(JavaType type) {
-        return objectMapper.writer().forType(type);
+    public static ObjectWriter writerFor(JavaType type) {
+        return objectMapper.writerFor(type);
     }
 }

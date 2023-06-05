@@ -1,7 +1,12 @@
 package cross.platform.test.suite.service;
 
 import cross.platform.test.suite.exception.TestSuiteException;
+import cross.platform.test.suite.pageobject.CatalogPage;
+import cross.platform.test.suite.pageobject.SideNavigationPage;
+import cross.platform.test.suite.pageobject.common.AbstractPage;
 import cross.platform.test.suite.pageobject.common.Page;
+import cross.platform.test.suite.pageobject.generic.CatalogGenericPage;
+import cross.platform.test.suite.pageobject.generic.SideNavigationGenericPage;
 import cross.platform.test.suite.properties.TestConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Platform;
@@ -15,22 +20,49 @@ import java.util.Map;
 @Slf4j
 public class POMFactory {
 
+    private final static Map<Class<?>, Class<? extends AbstractPage>> genericMap = Map.ofEntries(
+            entry(SideNavigationPage.class, SideNavigationGenericPage.class),
+            entry(CatalogPage.class, CatalogGenericPage.class)
+    );
+
+    private final static Map<Class<?>, Class<? extends AbstractPage>> iosMap = Map.ofEntries(
+    );
+
+    private final static Map<Class<?>, Class<? extends AbstractPage>> androidMap = Map.ofEntries(
+    );
+
     private final Platform currentPlatform;
     private final Map<Class<? extends Page>, Page> pageInstanceMap = new HashMap<>();
-    
-    private final Map<Class<? extends Page>, Provider<Page>> genericMap;
-    private final Map<Class<? extends Page>, Provider<Page>> iOSMap;
-    private final Map<Class<? extends Page>, Provider<Page>> androidMap;
-    
+
+    private final Map<Class<?>, Provider<AbstractPage>> genericMapBinding;
+    private final Map<Class<?>, Provider<AbstractPage>> iOSMapBinding;
+    private final Map<Class<?>, Provider<AbstractPage>> androidMapBinding;
+
     @Inject
     public POMFactory(TestConfig testConfig,
-                      @Named("genericMap") Map<Class<? extends Page>, Provider<Page>> genericMap,
-                      @Named("iOSMap") Map<Class<? extends Page>, Provider<Page>> androidMap,
-                      @Named("androidMap") Map<Class<? extends Page>, Provider<Page>> iOSPageObjectMap) {
-        this.genericMap = genericMap;
-        this.androidMap = androidMap;
-        this.iOSMap = iOSPageObjectMap;
+                      @Named("genericMap") Map<Class<?>, Provider<AbstractPage>> genericMapBinding,
+                      @Named("iOSMap") Map<Class<?>, Provider<AbstractPage>> androidMapBinding,
+                      @Named("androidMap") Map<Class<?>, Provider<AbstractPage>> iOSMapBinding) {
+        this.genericMapBinding = genericMapBinding;
+        this.androidMapBinding = androidMapBinding;
+        this.iOSMapBinding = iOSMapBinding;
         this.currentPlatform = testConfig.getMobileConfig().getDesiredCapabilities().getPlatformName();
+    }
+
+    private static <T extends Page, V extends T> Map.Entry<Class<T>, Class<V>> entry(Class<T> clazz, Class<V> implementationClass) {
+        return Map.entry(clazz, implementationClass);
+    }
+    
+    public static Map<Class<?>, Class<? extends AbstractPage>> getGenericMap() {
+        return genericMap;
+    }
+
+    public static Map<Class<?>, Class<? extends AbstractPage>> getIOSMap() {
+        return iosMap;
+    }
+
+    public static Map<Class<?>, Class<? extends AbstractPage>> getAndroidMap() {
+        return androidMap;
     }
 
     @SuppressWarnings("unchecked")
@@ -49,23 +81,18 @@ public class POMFactory {
     @SuppressWarnings("unchecked")
     private <T extends Page> T getImplementation(Class<T> clazz) {
         Page page = null;
-        if (this.currentPlatform.is(Platform.ANDROID) && this.androidMap.containsKey(clazz)) {
-            page = this.androidMap.get(clazz).get();
-        } else if (this.currentPlatform.is(Platform.IOS) && this.iOSMap.containsKey(clazz)) {
-            page = this.iOSMap.get(clazz).get();
-        } else if (this.genericMap.containsKey(clazz)) {
-            page = this.genericMap.get(clazz).get();
-        } 
-        
+        if (this.currentPlatform.is(Platform.ANDROID) && this.androidMapBinding.containsKey(clazz)) {
+            page = this.androidMapBinding.get(clazz).get();
+        } else if (this.currentPlatform.is(Platform.IOS) && this.iOSMapBinding.containsKey(clazz)) {
+            page = this.iOSMapBinding.get(clazz).get();
+        } else if (this.genericMapBinding.containsKey(clazz)) {
+            page = this.genericMapBinding.get(clazz).get();
+        }
+
         if (page != null) {
-            if (clazz.isAssignableFrom(page.getClass())) {
-                this.pageInstanceMap.put(clazz, page);
-                page.init();
-                return (T) page;
-            } else {
-                String message = String.format("Page object '%s' is mapped to wrong implementation '%s'!", clazz.getName(), page.getClass().getName());
-                throw new TestSuiteException(message);
-            }
+            this.pageInstanceMap.put(clazz, page);
+            page.init();
+            return (T) page;
         } else {
             String message = String.format("Page object implementation is not found for '%s'!", clazz.getName());
             throw new TestSuiteException(message);

@@ -3,7 +3,6 @@ package cross.platform.test.suite.test.catalog;
 import cross.platform.test.suite.annotation.AppendReport;
 import cross.platform.test.suite.annotation.ScreenRecord;
 import cross.platform.test.suite.annotation.Screenshot;
-import cross.platform.test.suite.guicemodule.common.ModuleFactory;
 import cross.platform.test.suite.model.Product;
 import cross.platform.test.suite.pageobject.CatalogPage;
 import cross.platform.test.suite.properties.UserInfo;
@@ -27,8 +26,8 @@ import java.util.List;
 @Slf4j
 @ScreenRecord
 @Getter
+@Guice
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-@Guice(moduleFactory = ModuleFactory.class)
 public class CatalogTest extends BaseTest {
 
     private final UserInfo userInfo;
@@ -84,4 +83,5 @@ public class CatalogTest extends BaseTest {
     public void scrollBackToTop() {
         pomFactory.get(CatalogPage.class).scrollToTop();
     }
+    
 }

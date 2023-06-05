@@ -15,7 +15,6 @@
         
         <parallel>none</parallel>
         <threadcount>4</threadcount>
-        <testnames>AllTests</testnames>
     </properties>
 
     <dependencies>
@@ -132,29 +131,10 @@
                             <parallel>${parallel}</parallel>
                         </systemProperties>
                         
-                        <suiteXmlFiles>
-                            <suiteXmlFile>resources/testng.xml</suiteXmlFile>
-                        </suiteXmlFiles>
-                        
                         <properties>
                             <property>
                                 <name>listener</name>
                                 <value>cross.platform.test.suite.listener.TestNGAlterListener</value>
-                            </property>
-                            
-                            <property>
-                                <name>parallel</name>
-                                <value>${parallel}</value>
-                            </property>
-                            
-                            <property>
-                                <name>threadcount</name>
-                                <value>${threadcount}</value>
-                            </property>
-                            
-                            <property>
-                                <name>testnames</name>
-                                <value>${testnames}</value>
                             </property>
                             
                             <property>
