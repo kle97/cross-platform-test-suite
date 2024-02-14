@@ -8,7 +8,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                %date{HH:mm:ss.SSS} Thread-%-2threadId %highlight(%-5level) %cyan(%-20logger{0}) - %msg%n
+                %date{HH:mm:ss.SSS} Thread-%threadId %highlight(%-5level) %cyan(%-20logger{0}) - %msg
             </pattern>
         </encoder>
     </appender>

@@ -39,13 +39,16 @@ dependencies {
             "ch.qos.logback:logback-core:1.4.14",
             "ch.qos.logback:logback-classic:1.4.14",
     )
-    
+    testCompileOnly(
+            "org.projectlombok:lombok:1.18.30"
+    )
+    testAnnotationProcessor(
+            "org.projectlombok:lombok:1.18.30"
+    )
     compileOnly(
-            // Lombok
             "org.projectlombok:lombok:1.18.30"
     )
     annotationProcessor(
-            // Lombok
             "org.projectlombok:lombok:1.18.30"
     )
 }
@@ -58,6 +61,7 @@ test {
 
     useTestNG() {
         listeners << "cross.platform.test.suite.configuration.TestNGListener"
+//        parallel "instances"
     }
 
     outputs.upToDateWhen { false }
@@ -66,11 +70,7 @@ test {
         exceptionFormat = "full"
     }
 
-    onOutput { descriptor, event ->
-        if (event.destination == TestOutputEvent.Destination.StdOut) {
-            logger.lifecycle(event.message.replaceFirst(/\s+$/, ""))
-        }
-    }
+    onOutput { descriptor, event -> logger.lifecycle(event.message) }
 }
 
 

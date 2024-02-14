@@ -6,11 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 @Slf4j
-public class SampleVerification extends BaseTest {
+public class SampleVerification extends BaseVerification {
     
     private final POCEventContext context;
 
-    public SampleVerification(POCEventContext context) {
+    public SampleVerification(POCEventContext context, BaseTest testCase) {
+        super(testCase);
         this.context = context;
     }
 

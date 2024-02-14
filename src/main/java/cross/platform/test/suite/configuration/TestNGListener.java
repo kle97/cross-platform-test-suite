@@ -1,26 +1,20 @@
 package cross.platform.test.suite.configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.testng.*;
+import org.testng.IAlterSuiteListener;
+import org.testng.IAnnotationTransformer;
 import org.testng.annotations.IFactoryAnnotation;
 import org.testng.xml.XmlSuite;
 
 import java.lang.reflect.Method;
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
-public class TestNGListener implements IAlterSuiteListener, IMethodInterceptor, IAnnotationTransformer {
-    
-    @Override
-    public List<IMethodInstance> intercept(List<IMethodInstance> list, ITestContext iTestContext) {
-        list.sort(Comparator.comparing(m -> m.getInstance().toString()));
-        return list;
-    }
+public class TestNGListener implements IAlterSuiteListener, IAnnotationTransformer {
 
     @Override
     public void transform(IFactoryAnnotation annotation, Method method) {
-        String property = System.getProperty("test");
+        String property = System.getProperty("factory");
         if (property == null) {
             annotation.setEnabled(false);
         } else {
