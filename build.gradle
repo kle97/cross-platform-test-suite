@@ -60,8 +60,9 @@ test {
     include("cross/platform/test/suite/testplan/*")
 
     useTestNG() {
+        useDefaultListeners false
         listeners << "cross.platform.test.suite.configuration.TestNGListener"
-//        parallel "instances"
+        parallel System.getProperty("parallel", "none")
     }
 
     outputs.upToDateWhen { false }

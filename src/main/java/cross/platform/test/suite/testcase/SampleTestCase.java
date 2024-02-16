@@ -1,47 +1,54 @@
 package cross.platform.test.suite.testcase;
 
-import cross.platform.test.suite.common.BaseTest;
 import cross.platform.test.suite.common.Simulator;
 import cross.platform.test.suite.context.POCEventContext;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.xml.XmlTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import org.testng.xml.XmlSuite;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Slf4j
-public class SampleTestCase {
+public class SampleTestCase extends BaseTest {
     
-    public static Object[] createTests(Simulator simulator, List<String> eventNames, 
-                                       BiFunction<POCEventContext, BaseTest, Object> verification) {
-        List<Object> tests = new ArrayList<>();
-        for (String eventName : eventNames) {
-            POCEventContext context = new POCEventContext(eventName);
-            
-            tests.add(verification.apply(context, new BaseTest() {
-                @BeforeClass
-                public void beforeTestCase(XmlTest xmlTest, ITestContext testContext) {
-                    if (eventNames.get(0).equals(eventName)) {
-                        log.info("Setting up for SampleTest!");
-                    }
-                    
-                    simulator.setEvent(context.getEventName(), true);
-                }
+    private final Simulator simulator;
+    private final List<String> eventNames;
+    private final Function<POCEventContext, Object>[] verifications;
 
-                @AfterClass
-                public void afterTestCase() {
-                    simulator.setEvent(context.getEventName(), false);
+    @SafeVarargs
+    public SampleTestCase(Simulator simulator, List<String> eventNames, Function<POCEventContext, Object>... verifications) {
+        this.simulator = simulator;
+        this.eventNames = eventNames;
+        this.verifications = verifications;
+    }
 
-                    if (eventNames.get(eventNames.size() - 1).equals(eventName)) {
-                        log.info("Tearing down for SampleTest!");
-                    }
-                }
-            }));
-        }
-        return tests.toArray();
+    @BeforeClass
+    public void beforeClass() {
+        log.info("Before Sample test case!");
+    }
+    
+    @DataProvider
+    public Object[][] data() {
+        return eventNames.stream()
+                         .map(e -> new Object[] { new POCEventContext(e) })
+                         .toArray(Object[][]::new);
+    }
+    
+    @Test(dataProvider = "data")
+    public void test(POCEventContext context) {
+        simulator.setEvent(context.getEventName(), true);
+        
+        runVerifications(applyContext(verifications, context), XmlSuite.ParallelMode.INSTANCES);
+        
+        simulator.setEvent(context.getEventName(), false);
+    }
+
+    @AfterClass
+    public void afterClass() {
+        log.info("After Sample test case!");
     }
 }
