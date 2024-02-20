@@ -1,3 +1,4 @@
+import java.util.concurrent.TimeUnit
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
@@ -57,12 +58,11 @@ test {
     // pass all system properties to java system properties
     systemProperties System.getProperties()
     
-    include("cross/platform/test/suite/testplan/*")
-
     useTestNG() {
         useDefaultListeners false
-        listeners << "cross.platform.test.suite.configuration.TestNGListener"
         parallel System.getProperty("parallel", "none")
+        listeners << "cross.platform.test.suite.configuration.TestNGListener"
+        threadCount Thread.activeCount()
     }
 
     outputs.upToDateWhen { false }
@@ -72,6 +72,11 @@ test {
     }
 
     onOutput { descriptor, event -> logger.lifecycle(event.message) }
+
+    afterSuite { descriptor, result ->
+        def duration = TimeUnit.MILLISECONDS.toMillis(result.endTime - result.startTime)
+        println "Total duration of $descriptor: $duration milliseconds"
+    }
 }
 
 

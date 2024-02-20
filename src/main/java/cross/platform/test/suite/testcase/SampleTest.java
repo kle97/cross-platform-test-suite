@@ -7,20 +7,19 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.xml.XmlSuite;
 
 import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
-public class SampleTestCase extends BaseTest {
+public class SampleTest extends BaseTest {
     
     private final Simulator simulator;
     private final List<String> eventNames;
     private final Function<POCEventContext, Object>[] verifications;
 
     @SafeVarargs
-    public SampleTestCase(Simulator simulator, List<String> eventNames, Function<POCEventContext, Object>... verifications) {
+    public SampleTest(Simulator simulator, List<String> eventNames, Function<POCEventContext, Object>... verifications) {
         this.simulator = simulator;
         this.eventNames = eventNames;
         this.verifications = verifications;
@@ -33,16 +32,14 @@ public class SampleTestCase extends BaseTest {
     
     @DataProvider
     public Object[][] data() {
-        return eventNames.stream()
-                         .map(e -> new Object[] { new POCEventContext(e) })
-                         .toArray(Object[][]::new);
+        return toData(eventNames.stream().map(POCEventContext::new));
     }
     
     @Test(dataProvider = "data")
     public void test(POCEventContext context) {
         simulator.setEvent(context.getEventName(), true);
         
-        runVerifications(applyContext(verifications, context), XmlSuite.ParallelMode.INSTANCES);
+        runVerifications(applyContext(verifications, context));
         
         simulator.setEvent(context.getEventName(), false);
     }
