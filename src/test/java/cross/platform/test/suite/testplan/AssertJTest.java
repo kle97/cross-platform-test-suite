@@ -11,8 +11,8 @@ public class AssertJTest {
     public void assertJTest() {
         SoftAssertJ softAssertions = new SoftAssertJ();
         softAssertions.assertThat("1").as("AAA").isEqualTo("1");
-        softAssertions.assertThat(new int[]{1, 2, 3}).as("BBB").contains(5);
-        softAssertions.assertThat(4).as("CCC").isEqualTo(5);
+        softAssertions.assertThat(4).as("BBB").isEqualTo(5);
+        softAssertions.assertThat(new int[]{1, 2, 3}).as("CCC").contains(5);
         softAssertions.assertThat(10).as("DDD").isEqualTo(10);
 
         try {

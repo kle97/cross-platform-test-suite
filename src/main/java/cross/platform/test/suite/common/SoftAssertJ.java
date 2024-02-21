@@ -1,5 +1,6 @@
 package cross.platform.test.suite.common;
 
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.ModifierReviewable;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -11,6 +12,7 @@ import org.assertj.core.presentation.Representation;
 
 import java.lang.reflect.InvocationTargetException;
 
+@Slf4j
 public class SoftAssertJ extends SoftAssertions {
 
     @Override
@@ -30,7 +32,7 @@ public class SoftAssertJ extends SoftAssertions {
                                   .method(ModifierReviewable.OfByteCodeElement::isPublic)
                                   .intercept(InvocationHandlerAdapter.of((proxy, method, args) -> {
                                       try {
-                                          if (!Assert.class.isAssignableFrom(method.getDeclaringClass())) {
+                                          if (method.getName().equals("as") || !Assert.class.isAssignableFrom(method.getDeclaringClass())) {
                                               method.invoke(self, args);
                                               return proxy;
                                           }
