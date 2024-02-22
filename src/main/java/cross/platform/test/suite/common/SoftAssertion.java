@@ -242,16 +242,7 @@ public class SoftAssertion {
         }
 
         protected void doAssert(IAssert<?> assertCommand) {
-            loggingAssertion.onBeforeAssert(assertCommand);
-            try {
-                loggingAssertion.executeAssert(assertCommand);
-                loggingAssertion.onAssertSuccess(assertCommand);
-            } catch (AssertionError e) {
-                loggingAssertion.onAssertFailure(assertCommand, e);
-                throw e;
-            } finally {
-                loggingAssertion.onAfterAssert(assertCommand);
-            }
+            loggingAssertion.loggingAssert(assertCommand);
         }
 
         protected <E extends Iterable<?>> void failNoOrder(String message, E actual, E expected) {
@@ -320,6 +311,10 @@ public class SoftAssertion {
     }
 
     public static class LoggingAssertion extends SoftAssert {
+
+        public void loggingAssert(IAssert<?> a) {
+            doAssert(a);
+        }
         
         @Override
         public void onAssertSuccess(IAssert<?> assertCommand) {
