@@ -1,13 +1,13 @@
 package cross.platform.test.suite.common;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.bind.annotation.*;
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.AbstractSoftAssertions;
-import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.WritableAssertionInfo;
+import org.assertj.core.api.*;
+import org.assertj.core.description.Description;
 import org.assertj.core.presentation.Representation;
 import sun.misc.Unsafe;
 
@@ -15,26 +15,77 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 @Slf4j
 public class SoftAssertJ extends SoftAssertions {
     
+    private static final SoftAssertJ softAssertions = new SoftAssertJ();
+    private static final ThreadLocal<AssertionDescription> messages = new ThreadLocal<>();
+
+    public static SoftAssertJ getInstance() {
+        return softAssertions;
+    }
+
+    @Builder
+    @Getter
+    static class AssertionDescription {
+        private String formatter;
+        private Object[] args;
+        private Description description;
+        private Supplier<String> supplier;
+    }
+    
+    public SoftAssertJ as(String description, Object... args) {
+        messages.set(AssertionDescription.builder().formatter(description).args(args).build());
+        return this;
+    }
+
+    public SoftAssertJ as(Description description) {
+        messages.set(AssertionDescription.builder().description(description).build());
+        return this;
+    }
+
+    public SoftAssertJ as(Supplier<String> description) {
+        messages.set(AssertionDescription.builder().supplier(description).build());
+        return this;
+    }
+
+    @Override
+    public <SELF extends Assert<? extends SELF, ? extends ACTUAL>, ACTUAL> SELF proxy(Class<SELF> assertClass,
+                                                                                      Class<ACTUAL> actualClass,
+                                                                                      ACTUAL actual) {
+        SELF proxy = super.proxy(assertClass, actualClass, actual);
+        if (messages.get() != null) {
+            AssertionDescription description = messages.get();
+            if (description.getFormatter() != null) {
+                proxy.as(description.getFormatter(), description.getArgs());
+            } else if (description.getDescription() != null) {
+                proxy.as(description.getDescription());
+            } else if (description.getSupplier() != null) {
+                proxy.as(description.getSupplier());
+            }
+            messages.remove();
+        }
+        return proxy;
+    }
+
     public interface ByteBuddyInterceptor {
         @RuntimeType
         <T extends AbstractAssert<?, ?>> Object intercept(@This T assertion,
-                                                          @SuperCall Callable<?> proxy,
+                                                          @SuperCall(nullIfImpossible = true) Callable<T> proxy,
                                                           @SuperMethod(nullIfImpossible = true) Method superMethod,
                                                           @StubValue Object stub,
                                                           @Origin Method method,
                                                           @AllArguments Object[] arguments,
                                                           @FieldValue("actual") Object actual) throws Exception;
     }
-    
+
     public SoftAssertJ() {
         try {
             Implementation implementation = MethodDelegation.to(new ByteBuddyInterceptor() {
                 @Override
-                public <T extends AbstractAssert<?, ?>> Object intercept(T assertion, Callable<?> proxy,
+                public <T extends AbstractAssert<?, ?>> Object intercept(T assertion, Callable<T> proxy,
                                                                          Method superMethod, Object stub, Method method,
                                                                          Object[] arguments, Object actual) throws Exception {
                     WritableAssertionInfo info = assertion.getWritableAssertionInfo();
@@ -68,7 +119,7 @@ public class SoftAssertJ extends SoftAssertions {
                                  .count() > 1;
                 }
             }, ByteBuddyInterceptor.class);
-            
+
             Field softProxies = AbstractSoftAssertions.class.getDeclaredField("proxies");
             softProxies.setAccessible(true);
             Field ERROR_COLLECTOR = softProxies.getType().getDeclaredField("ERROR_COLLECTOR");
@@ -80,7 +131,7 @@ public class SoftAssertJ extends SoftAssertions {
             throw new RuntimeException(e);
         }
     }
-    
+
     public void onAssertSuccess(WritableAssertionInfo info, Object actual, Method method, Object[] arguments) {
         Representation representation = info.representation();
         StringBuilder sb = new StringBuilder();
@@ -91,13 +142,16 @@ public class SoftAssertJ extends SoftAssertions {
             }
         }
 
-        Reporter.pass("[" + info.descriptionText() + "] expected: " + sb + " " 
-                              + method.getName() + ": " + representation.toStringOf(actual));
+        String message = !info.descriptionText().isEmpty() ? "[" + info.descriptionText() + "] " : "";
+        String methodName = method.getName().replace("ForProxy", "");
+        Reporter.pass(message + "expected: " + representation.toStringOf(actual)
+                              + " " + methodName + (sb.length() > 0 ? ": " : "") + sb);
     }
 
     @Override
     public void onAssertionErrorCollected(AssertionError e) {
         Reporter.fail(e.getMessage()
+                       .trim()
                        .replaceAll("[\\s]{1,}", " ")
                        .replace("Expecting", "expected"));
     }

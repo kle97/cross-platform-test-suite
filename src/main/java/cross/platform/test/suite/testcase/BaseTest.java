@@ -1,5 +1,6 @@
 package cross.platform.test.suite.testcase;
 
+import cross.platform.test.suite.common.SoftAssertJ;
 import cross.platform.test.suite.configuration.VerificationListener;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.TestNG;
@@ -14,8 +15,7 @@ import java.util.stream.Stream;
 @Slf4j
 public abstract class BaseTest {
 
-    private final long nanosecond = System.nanoTime();
-    private final String toString = nanosecond + "@" + getClass().getName();
+    private final String toString = System.nanoTime() + "@" + getClass().getName();
 
     protected void runVerifications(Object[] verifications) {
         XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.getValidParallel(System.getProperty("verifications.parallel", "none"));
@@ -51,5 +51,9 @@ public abstract class BaseTest {
     @Override
     public String toString() {
         return toString;
+    }
+    
+    public SoftAssertJ softAssert() {
+        return SoftAssertJ.getInstance();
     }
 }
