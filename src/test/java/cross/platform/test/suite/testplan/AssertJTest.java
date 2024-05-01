@@ -9,6 +9,7 @@ public class AssertJTest extends BaseTest {
 
     @Test
     public void assertJTest() {
+        log.info("assertJTest");
         softAssert().as("AAA").assertThat("1").isEqualTo("1");
         softAssert().as("BB%s", "B").assertThat(4).isEqualTo(5);
         softAssert().as("CCC").assertThat(new int[]{1, 2, 3}).contains(5, 6);

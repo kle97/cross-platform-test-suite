@@ -20,10 +20,13 @@ import java.util.function.Supplier;
 @Slf4j
 public class SoftAssertJ extends SoftAssertions {
     
-    private static final SoftAssertJ softAssertions = new SoftAssertJ();
+    private static SoftAssertJ softAssertions;
     private static final ThreadLocal<AssertionDescription> messages = new ThreadLocal<>();
 
     public static SoftAssertJ getInstance() {
+        if (softAssertions == null) {
+            softAssertions = new SoftAssertJ();
+        }
         return softAssertions;
     }
 
